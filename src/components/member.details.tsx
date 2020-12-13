@@ -6,6 +6,7 @@ import AreasData from '../data/AreasData.json';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave} from '@fortawesome/free-regular-svg-icons';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import './member.details.scss';
 
 interface MemberDetailsProps {
 	member?: Models.Member,

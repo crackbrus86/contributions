@@ -16,7 +16,7 @@ const defaultMember: Models.Member = {
 	id: null,
 	passport: '',
 	address: '',
-	phone: '',
+	phone: null,
 	email: '',
 	job: '',
 	position: '',
@@ -24,11 +24,12 @@ const defaultMember: Models.Member = {
 	otherFederationMembership: false,
 	fpuDate: new Date(),
 	area: '',
+	areaId: null,
 	isContributed: false
 } 
 
 export const MemberDetails: React.FC = () => {
-	const {member: currentMember, onBack} = useAppContext();
+	const {member: currentMember, onBack, onCreateMember} = useAppContext();
 	const [member, setMemeber] = React.useState<Models.Member>(currentMember || defaultMember);
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
@@ -36,8 +37,9 @@ export const MemberDetails: React.FC = () => {
 		setMemeber(nextMember);
 	}
 
-	const onSave = () => {
-		console.log(member);
+	const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		await onCreateMember(member);
 		onBack();
 	}
 
@@ -48,7 +50,7 @@ export const MemberDetails: React.FC = () => {
                 <button type='button' className='btn btn-primary' onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
             </div>
         </div>
-		<form onSubmit={onSave}>
+		<form onSubmit={e => onSave(e)}>
 			<div className='mb-3'>
 				<label className='form-label'>Прізвище, ім'я, по батькові</label>
 				<input type='text' className='form-control' value={member.fullName} onChange={e => onMemberUpdate('fullName', e.target.value)} />
@@ -64,9 +66,9 @@ export const MemberDetails: React.FC = () => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Область</label>
-					<select className='form-select form-control' onChange={e => onMemberUpdate('area', e.target.value)} defaultValue={member.area}>
+					<select className='form-select form-control' value={member.areaId || ''} onChange={e => onMemberUpdate('areaId', e.target.value)}>
 						<option key='0'></option>
-						{AreasData.map(area => <option key={area.id}>{area.title}</option>)}
+						{AreasData.map(area => <option key={area.id} value={area.id}>{area.title}</option>)}
 					</select>
 				</div>
 
@@ -78,7 +80,7 @@ export const MemberDetails: React.FC = () => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Ідентифікаційний номер</label>
-					<input type='number' className='form-control' value={member.id} onChange={e => onMemberUpdate('id', e.target.value)} />
+					<input type='number' className='form-control' value={member.id || ''} onChange={e => onMemberUpdate('id', e.target.value)} />
 				</div>
 				<div className='col'>
 					<label className='form-label'>Паспорт №, де і ким виданий</label>
@@ -93,7 +95,7 @@ export const MemberDetails: React.FC = () => {
 						<input
 							type='number'
 							className='form-control'
-							value={member.phone}
+							value={member.phone || ''}
 							onChange={e => onMemberUpdate('phone', e.target.value)}
 							aria-describedby='member-phone'
 						/>

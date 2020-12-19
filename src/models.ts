@@ -7,10 +7,10 @@ export interface Member {
 	fullName: string,
 	dateOfBirth: Date,
 	citizenship: string,
-	id: number,
+	id?: number,
 	passport: string,
 	address: string,
-	phone: string,
+	phone: number,
 	email: string,
 	job: string,
 	position: string,
@@ -18,6 +18,7 @@ export interface Member {
 	otherFederationMembership: boolean,
 	fpuDate: Date,
 	area: string,
+	areaId: number,
 	isContributed: boolean
 }
 

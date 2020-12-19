@@ -7,6 +7,7 @@ Author: Salivon Eugene
 */
 define('CNTR_DIR', plugin_dir_path(__FILE__));
 add_action("admin_menu", array("Contributions", "initSettings"));
+add_action("admin_init", array("Contributions", "initDb"));
 
 class Contributions {
     public function initSettings(){
@@ -22,5 +23,9 @@ class Contributions {
             <div id="cntrAdmApp"></div>
         </div>
         <?php
+    }
+
+    public function initDb(){
+        require_once(CNTR_DIR . "./db.init.php");
     }
 }

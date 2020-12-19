@@ -33,6 +33,22 @@ export const useApp = () => {
 		setView(Models.View.MembersList);
 	}
 
+	const onCreateMember = async (nextMemeber: Models.Member) => {
+		await fetch(`../wp-content/plugins/contributions/api/AddMember.php`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(nextMemeber)
+		})
+	}
+
+	const onLoadMembersAdm = async () => {
+		await fetch(`../wp-content/plugins/contributions/api/GetAllMembersAdm.php`)
+		.then(response => response.json())
+		.then(data => console.log(data));
+	}
+
 	return {
 		view,
 		member,
@@ -41,6 +57,8 @@ export const useApp = () => {
 		onAddMember,
 		onEdit,
 		onBack,
+		onCreateMember,
+		onLoadMembersAdm,
 	};
 }
 

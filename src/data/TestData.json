@@ -14,6 +14,7 @@
         "otherFederationMembership": false,
         "fpuDate": "1/21/2013",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -31,6 +32,7 @@
         "otherFederationMembership": false,
         "fpuDate": "3/26/2018",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -48,6 +50,7 @@
         "otherFederationMembership": false,
         "fpuDate": "11/24/2017",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -65,6 +68,7 @@
         "otherFederationMembership": false,
         "fpuDate": "1/30/2013",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -82,6 +86,7 @@
         "otherFederationMembership": false,
         "fpuDate": "1/30/2013",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -99,6 +104,7 @@
         "otherFederationMembership": false,
         "fpuDate": "2/1/2013",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": false
     },
     {
@@ -116,6 +122,7 @@
         "otherFederationMembership": false,
         "fpuDate": "1/1/2019",
         "area": "Полтавська",
+        "areaId": 2,
         "isContributed": true
     }
 ]

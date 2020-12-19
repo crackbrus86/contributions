@@ -10,18 +10,20 @@ import './members.list.scss';
 import {useAppContext} from '../app.context';
 
 export const MembersList: React.FC = () => {
-    const {onAddMember, onEdit} = useAppContext();
+    const {onAddMember, onEdit, onLoadMembersAdm} = useAppContext();
     const [members, setMembers] = React.useState<Models.Member[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
     const onLoadMembers = async () => {
         setIsLoading(true);
+        await onLoadMembersAdm();
         await setTimeout(() => {
             const nextMembers: Models.Member[] = DataSource.map(member => ({
                 ...member,
                 dateOfBirth: new Date(member.dateOfBirth),
                 id: parseInt(member.id),
-                fpuDate: new Date(member.fpuDate)
+                fpuDate: new Date(member.fpuDate),
+                phone: parseInt(member.phone),
             } as Models.Member))
             setMembers(nextMembers)
             setIsLoading(false);

@@ -1,31 +1,15 @@
 import React from 'react';
-import * as Models from './models'
-import { MembersList } from './components/members.list';
-import { MemberDetails } from './components/member.details';
+import { AppProvider, useApp} from './app.context';
+import {AppRouter} from './app.router';
 
 const App: React.FC = () => {
-	const [view, setView] = React.useState<Models.View>(Models.View.MembersList);
-	const [member, setMember] = React.useState<Models.Member>(null);
+	const appContext = useApp();
 
-	const onAddMember = () => {
-		setView(Models.View.MemberDetails);
-	}
-
-	const onEdit = (nextMember: Models.Member) => {
-		setMember(nextMember);
-		setView(Models.View.MemberDetails)
-	}
-
-	const onBack = () => {
-		setMember(null);
-		setView(Models.View.MembersList);
-	}
-
-	return (
+	return (<AppProvider {...appContext}>
 		<div className='federation-membership container-fluid'>
-			{view === Models.View.MembersList && <MembersList onAddMember={onAddMember} onEditMember={onEdit} />}
-			{view === Models.View.MemberDetails && <MemberDetails member={member} onBack={onBack} />}
+			<AppRouter/>
 		</div>
+	</AppProvider>
 	);
 }
 

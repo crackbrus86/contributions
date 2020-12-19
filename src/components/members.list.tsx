@@ -7,13 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUserEdit, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
+import {useAppContext} from '../app.context';
 
-interface MembersListProps {
-    onAddMember(): void,
-    onEditMember(member: Models.Member): void
-}
-
-export const MembersList: React.FC<MembersListProps> = props => {
+export const MembersList: React.FC = () => {
+    const {onAddMember, onEdit} = useAppContext();
     const [members, setMembers] = React.useState<Models.Member[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -39,7 +36,7 @@ export const MembersList: React.FC<MembersListProps> = props => {
         <h2>Внески членів ФПУ</h2>
         <div className='row mb-2 mt-2'>
             <div className='col-lg'>
-                <button type='button' className='btn btn-primary' onClick={props.onAddMember}><FontAwesomeIcon icon={faUserPlus} size='1x' /> Додати персону</button>
+                <button type='button' className='btn btn-primary' onClick={onAddMember}><FontAwesomeIcon icon={faUserPlus} size='1x' /> Додати персону</button>
             </div>
         </div>
         <div className='row'>
@@ -60,7 +57,7 @@ export const MembersList: React.FC<MembersListProps> = props => {
                         </thead>
                         <tbody>
                             {members.map((member, index) => <tr key={member.id}>
-                                <td key='btn1'><FontAwesomeIcon icon={faUserEdit} size='2x' className='table__action-btn' onClick={() => props.onEditMember(member)} /></td>
+                                <td key='btn1'><FontAwesomeIcon icon={faUserEdit} size='2x' className='table__action-btn' onClick={() => onEdit(member)} /></td>
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>
                                 <td key='dateOfBirth'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>

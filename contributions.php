@@ -17,6 +17,7 @@ class Contributions {
         wp_register_script('clientApp', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
         wp_enqueue_script('clientApp');
         ?>
+        <div id="usrInfo" data-info="<?php print(get_current_user_id()); ?>"></div>
         <div class="container-fluid">
             <div id="cntrAdmApp"></div>
         </div>

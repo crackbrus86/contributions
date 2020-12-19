@@ -20,3 +20,13 @@ export interface Member {
 	area: string,
 	isContributed: boolean
 }
+
+export interface ServerCredentials {
+	app_type: string,
+	uid: number
+}
+
+export interface AppCredentials {
+	appType: string,
+	uid: number
+}

@@ -7,11 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave} from '@fortawesome/free-regular-svg-icons';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import './member.details.scss';
-
-interface MemberDetailsProps {
-	member?: Models.Member,
-	onBack(): void,
-}
+import {useAppContext} from '../app.context';
 
 const defaultMember: Models.Member = {
 	fullName: '',
@@ -31,8 +27,9 @@ const defaultMember: Models.Member = {
 	isContributed: false
 } 
 
-export const MemberDetails: React.FC<MemberDetailsProps> = props => {
-	const [member, setMemeber] = React.useState<Models.Member>(props.member || defaultMember);
+export const MemberDetails: React.FC = () => {
+	const {member: currentMember, onBack} = useAppContext();
+	const [member, setMemeber] = React.useState<Models.Member>(currentMember || defaultMember);
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
 		const nextMember = { ...member, [key]: value };
@@ -41,14 +38,14 @@ export const MemberDetails: React.FC<MemberDetailsProps> = props => {
 
 	const onSave = () => {
 		console.log(member);
-		props.onBack();
+		onBack();
 	}
 
 	return <div className='member-details'>
-		<h2>{`${props.member ? 'Редагувати' : 'Створити'} особову карту`}</h2>
+		<h2>{`${currentMember ? 'Редагувати' : 'Створити'} особову карту`}</h2>
         <div className='row mb-2 mt-2'>
             <div className='col-lg'>
-                <button type='button' className='btn btn-primary' onClick={props.onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
+                <button type='button' className='btn btn-primary' onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
             </div>
         </div>
 		<form onSubmit={onSave}>
@@ -67,9 +64,9 @@ export const MemberDetails: React.FC<MemberDetailsProps> = props => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Область</label>
-					<select className='form-select form-control' onChange={e => onMemberUpdate('area', e.target.value)} defaultValue=''>
+					<select className='form-select form-control' onChange={e => onMemberUpdate('area', e.target.value)} defaultValue={member.area}>
 						<option key='0'></option>
-						{AreasData.map(area => <option key={area.id} selected={area.title === member.area}>{area.title}</option>)}
+						{AreasData.map(area => <option key={area.id}>{area.title}</option>)}
 					</select>
 				</div>
 

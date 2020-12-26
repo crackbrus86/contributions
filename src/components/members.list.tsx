@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Models from '../models';
-import DataSource from '../data/TestData.json';
 import TableHeaders from "./TableHeaders.json";
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,24 +9,13 @@ import './members.list.scss';
 import {useAppContext} from '../app.context';
 
 export const MembersList: React.FC = () => {
-    const {onAddMember, onEdit, onLoadMembersAdm} = useAppContext();
-    const [members, setMembers] = React.useState<Models.Member[]>([]);
+    const { members, onAddMember, onEdit, onLoadMembersAdm} = useAppContext();
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
     const onLoadMembers = async () => {
         setIsLoading(true);
         await onLoadMembersAdm();
-        await setTimeout(() => {
-            const nextMembers: Models.Member[] = DataSource.map(member => ({
-                ...member,
-                dateOfBirth: new Date(member.dateOfBirth),
-                id: parseInt(member.id),
-                fpuDate: new Date(member.fpuDate),
-                phone: parseInt(member.phone),
-            } as Models.Member))
-            setMembers(nextMembers)
-            setIsLoading(false);
-        }, 1000);
+        setIsLoading(false);
     }
 
     React.useEffect(() => {
@@ -58,7 +46,7 @@ export const MembersList: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {members.map((member, index) => <tr key={member.id}>
+                            {members.map((member, index) => <tr key={member.memberId}>
                                 <td key='btn1'><FontAwesomeIcon icon={faUserEdit} size='2x' className='table__action-btn' onClick={() => onEdit(member)} /></td>
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>

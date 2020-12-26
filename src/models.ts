@@ -4,6 +4,7 @@ export enum View {
 }
 
 export interface Member {
+	memberId: number,
 	fullName: string,
 	dateOfBirth: Date,
 	citizenship: string,
@@ -30,4 +31,9 @@ export interface ServerCredentials {
 export interface AppCredentials {
 	appType: string,
 	uid: number
+}
+
+export interface Region {
+	id: number,
+	name: string
 }

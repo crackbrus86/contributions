@@ -1,6 +1,8 @@
 import React from 'react';
 import { AppProvider, useApp} from './app.context';
 import {AppRouter} from './app.router';
+import 'react-toastify/dist/ReactToastify.css';
+import {ToastContainer} from 'react-toastify';
 
 const App: React.FC = () => {
 	const appContext = useApp();
@@ -9,6 +11,7 @@ const App: React.FC = () => {
 		<div className='federation-membership container-fluid'>
 			<AppRouter/>
 		</div>
+		<ToastContainer />
 	</AppProvider>
 	);
 }

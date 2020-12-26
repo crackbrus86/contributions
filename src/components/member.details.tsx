@@ -2,14 +2,17 @@ import React from 'react';
 import * as Models from '../models';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import AreasData from '../data/AreasData.json';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSave} from '@fortawesome/free-regular-svg-icons';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import './member.details.scss';
-import {useAppContext} from '../app.context';
+import { useAppContext } from '../app.context';
+import { toast } from 'react-toastify';
+import * as classnames from 'classnames';
+import MaskedInput from 'react-text-mask';
 
 const defaultMember: Models.Member = {
+	memberId: null,
 	fullName: '',
 	dateOfBirth: new Date(),
 	citizenship: '',
@@ -26,10 +29,10 @@ const defaultMember: Models.Member = {
 	area: '',
 	areaId: null,
 	isContributed: false
-} 
+}
 
 export const MemberDetails: React.FC = () => {
-	const {member: currentMember, onBack, onCreateMember} = useAppContext();
+	const { member: currentMember, regions, onBack, onCreateMember, onUpdateMember } = useAppContext();
 	const [member, setMemeber] = React.useState<Models.Member>(currentMember || defaultMember);
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
@@ -39,44 +42,99 @@ export const MemberDetails: React.FC = () => {
 
 	const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		await onCreateMember(member);
-		onBack();
+		if (!member.memberId) {
+			const status = await onCreateMember(member);
+			if (status) 
+				onBack();
+			else
+				toast.error('Помилка збереження. Форма містить не валідні поля.');
+		} else {
+			await onUpdateMember(member);
+			toast.success('Зміни збережені.');
+		}
 	}
 
 	return <div className='member-details'>
 		<h2>{`${currentMember ? 'Редагувати' : 'Створити'} особову карту`}</h2>
-        <div className='row mb-2 mt-2'>
-            <div className='col-lg'>
-                <button type='button' className='btn btn-primary' onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
-            </div>
-        </div>
+		<div className='row mb-2 mt-2'>
+			<div className='col-lg'>
+				<button type='button' className='btn btn-primary' onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
+			</div>
+		</div>
 		<form onSubmit={e => onSave(e)}>
 			<div className='mb-3'>
 				<label className='form-label'>Прізвище, ім'я, по батькові</label>
-				<input type='text' className='form-control' value={member.fullName} onChange={e => onMemberUpdate('fullName', e.target.value)} />
+				<input
+					type='text'
+					className={classnames('form-control', { 'is-invalid': !member.fullName })} 
+					value={member.fullName}
+					onChange={e => onMemberUpdate('fullName', e.target.value)}
+
+				/>
+				{
+					!member.fullName && 
+					<div className='invalid-feedback'>
+						Прізвище, ім'я, по батькові є обов'язковим полем!
+					</div>
+				}
 			</div>
 			<div className='mb-3 row'>
 				<div className='col'>
-					<label className='form-label'>Дата народження</label><br/>
-					<DatePicker className='form-control' selected={member.dateOfBirth} dateFormat='dd/MM/yyyy' onChange={date => onMemberUpdate('dateOfBirth', date)} />
+					<label className='form-label'>Дата народження</label><br />
+					<DatePicker
+						className={classnames('form-control', { 'is-invalid': !member.dateOfBirth || !(member.dateOfBirth instanceof Date) })}
+						selected={member.dateOfBirth}
+						showYearDropdown
+						showMonthDropdown
+						dateFormat='dd/MM/yyyy'
+						onChange={date => onMemberUpdate('dateOfBirth', date)}
+					/>
 				</div>
 				<div className='col'>
-					<label className='form-label'>Дата вступу до ФПУ</label><br/>
-					<DatePicker className='form-control' selected={member.fpuDate} dateFormat='dd/MM/yyyy' onChange={date => onMemberUpdate('fpuDate', date)} />
+					<label className='form-label'>Дата вступу до ФПУ</label><br />
+					<DatePicker
+						className={classnames('form-control', { 'is-invalid': !member.fpuDate || !(member.fpuDate instanceof Date) })}
+						selected={member.fpuDate}
+						showYearDropdown
+						showMonthDropdown
+						dateFormat='dd/MM/yyyy'
+						onChange={date => onMemberUpdate('fpuDate', date)}
+					/>
 				</div>
 				<div className='col'>
 					<label className='form-label'>Область</label>
-					<select className='form-select form-control' value={member.areaId || ''} onChange={e => onMemberUpdate('areaId', e.target.value)}>
+					<select
+						className={classnames('form-select', 'form-control', { 'is-invalid': !member.areaId })}
+						value={member.areaId || ''}
+						onChange={e => onMemberUpdate('areaId', e.target.value)}
+					>
 						<option key='0'></option>
-						{AreasData.map(area => <option key={area.id} value={area.id}>{area.title}</option>)}
+						{regions.map(region => <option key={region.id} value={region.id}>{region.name}</option>)}
 					</select>
+					{
+						!member.areaId && 
+						<div className='invalid-feedback'>
+							Область є обов'язковим полем!
+						</div>
+					}
 				</div>
 
 			</div>
 			<div className='row mb-3'>
 				<div className='col'>
 					<label className='form-label'>Громадянство</label>
-					<input type='text' className='form-control' value={member.citizenship} onChange={e => onMemberUpdate('citizenship', e.target.value)} />
+					<input
+						type='text'
+						className={classnames('form-control', { 'is-invalid': !member.citizenship })}
+						value={member.citizenship}
+						onChange={e => onMemberUpdate('citizenship', e.target.value)}
+					/>
+					{
+						!member.citizenship && 
+						<div className='invalid-feedback'>
+							Громадянство є обов'язковим полем!
+						</div>
+					}
 				</div>
 				<div className='col'>
 					<label className='form-label'>Ідентифікаційний номер</label>
@@ -84,7 +142,18 @@ export const MemberDetails: React.FC = () => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Паспорт №, де і ким виданий</label>
-					<textarea className='form-control' rows={3} value={member.passport} onChange={e => onMemberUpdate('passport', e.target.value)} ></textarea>
+					<textarea
+						className={classnames('form-control', { 'is-invalid': !member.passport })}
+						rows={3}
+						value={member.passport}
+						onChange={e => onMemberUpdate('passport', e.target.value)}
+					></textarea>
+					{
+						!member.passport && 
+						<div className='invalid-feedback'>
+							Паспорт №, де і ким виданий є обов'язковим полем!
+						</div>
+					}					
 				</div>
 			</div>
 			<div className='mb-3 row'>
@@ -92,13 +161,19 @@ export const MemberDetails: React.FC = () => {
 					<label className='form-label'>Контактні телефони, факс</label>
 					<div className='input-group'>
 						<span className='input-group-text' id='member-phone'>+38</span>
-						<input
-							type='number'
-							className='form-control'
+						<MaskedInput
+							placeholder='(XXX) XXX-XXXX'
+							className={classnames('form-control', { 'is-invalid': !member.phone })}
 							value={member.phone || ''}
 							onChange={e => onMemberUpdate('phone', e.target.value)}
-							aria-describedby='member-phone'
+							mask={['(', /[0-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
 						/>
+						{
+							!member.phone && 
+							<div className='invalid-feedback'>
+								Контактні телефони, факс є обов'язковим полем!
+							</div>
+						}						
 					</div>
 				</div>
 				<div className='col'>
@@ -130,31 +205,31 @@ export const MemberDetails: React.FC = () => {
 					<textarea className='form-control' rows={3} value={member.jobAddress} onChange={e => onMemberUpdate('jobAddress', e.target.value)} ></textarea>
 				</div>
 			</div>
-			<div className='mb-3 ml-1 row'>
+			<div className='mb-3 row'>
 				<div className='form-check'>
-      				<input
-					  className='form-check-input'
-					  type='checkbox'
-					  checked={member.otherFederationMembership}
-					  onChange={() => onMemberUpdate('otherFederationMembership', !member.otherFederationMembership)} 
+					<input
+						className='form-check-input'
+						type='checkbox'
+						checked={member.otherFederationMembership}
+						onChange={() => onMemberUpdate('otherFederationMembership', !member.otherFederationMembership)}
 					/>
-      				<label className='form-check-label'>
-					  Членство в інших федераціях
+					<label className='form-check-label'>
+						Членство в інших федераціях
 					</label>
-    			</div>
+				</div>
 			</div>
-			<div className='mb-3'>
+			<div className='mb-3 row'>
 				<div className='form-check'>
-      				<input
-					  className='form-check-input'
-					  type='checkbox'
-					  checked={member.isContributed}
-					  onChange={() => onMemberUpdate('isContributed', !member.isContributed)} 
+					<input
+						className='form-check-input'
+						type='checkbox'
+						checked={member.isContributed}
+						onChange={() => onMemberUpdate('isContributed', !member.isContributed)}
 					/>
-      				<label className='form-check-label'>
-					  Внесок сплачено
+					<label className='form-check-label'>
+						Внесок сплачено
 					</label>
-    			</div>
+				</div>
 			</div>
 			<div>
 				<button type='submit' className='btn btn-success'><FontAwesomeIcon icon={faSave} size='1x' /> Зберегти</button>

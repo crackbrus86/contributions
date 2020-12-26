@@ -5,15 +5,20 @@ import { MemberDetails } from './components/member.details';
 import { useAppContext } from './app.context';
 
 export const AppRouter: React.FC = () => {
-    const {view, onLoadCredentials} = useAppContext();
+    const {view, credentials, regions, onLoadRegions, onLoadCredentials} = useAppContext();
     
     React.useEffect(() => {
         onLoadCredentials();
-    }, [])
+	}, [])
+	
+	React.useEffect(() => {
+		if(!regions.length)
+			onLoadRegions();
+	}, [regions]);
 
 	return (<>
-			{view === Models.View.MembersList && <MembersList />}
-			{view === Models.View.MemberDetails && <MemberDetails />}
+			{view === Models.View.MembersList && !!credentials && <MembersList />}
+			{view === Models.View.MemberDetails && !!credentials && <MemberDetails />}
 		</>
 	);
 }

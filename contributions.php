@@ -9,6 +9,24 @@ define('CNTR_DIR', plugin_dir_path(__FILE__));
 add_action("admin_menu", array("Contributions", "initSettings"));
 add_action("admin_init", array("Contributions", "initDb"));
 
+function getRegionClient()
+{
+    wp_register_script('clientAppRegion', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
+    wp_enqueue_script('clientAppRegion');
+    if(isset($_SESSION['regionObj']))
+    { 
+        ?>
+            <div id="usrInfo" data-info="<?php print($_SESSION['regionObj']->id); ?>"></div>
+            <div class="container-fluid">
+                <div id="cntrAdmApp"></div>
+            </div>
+        <?php
+    } else {
+        echo "<script>window.location.replace('".get_home_url()."')</script>";
+    }
+}
+add_shortcode('pcRegion', 'getRegionClient');
+
 class Contributions {
     public function initSettings(){
         add_menu_page("Contributions", "Члени ФПУ", "manage_options", "contributions", array("Contributions", "contributionsAdmin"));

@@ -8,7 +8,7 @@ export interface Member {
 	fullName: string,
 	dateOfBirth: Date,
 	citizenship: string,
-	id?: number,
+	id?: string,
 	passport: string,
 	address: string,
 	phone: number,
@@ -36,4 +36,13 @@ export interface AppCredentials {
 export interface Region {
 	id: number,
 	name: string
+}
+
+export interface ChangeContributionStatusModel {
+	memberId: number,
+	isContributed: boolean
+}
+
+export interface DeleteMemberModel {
+	memberId: number,
 }

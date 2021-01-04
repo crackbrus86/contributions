@@ -6,8 +6,9 @@ if(current_user_can('manage_options'))
 {
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     $table_regions = $wpdb->get_blog_prefix() . "regions";
-    $sql = "SELECT
-        memberId,
+    $table_pc_log = $wpdb->get_blog_prefix() . "pc_log";
+    $sql = $wpdb->prepare("SELECT
+        members.memberId,
         fullName,
         dateOfBirth,
         citizenship,
@@ -23,9 +24,11 @@ if(current_user_can('manage_options'))
         fpuDate,
         areaId,
         regions.name as area,
-        0 as isContributed
+        CASE WHEN log.contributionId IS NOT NULL THEN 1 ELSE 0 END as isContributed
     FROM $table_pc_members AS members
-    JOIN $table_regions AS regions ON regions.id = members.areaId";
+    JOIN $table_regions AS regions ON regions.id = members.areaId
+    LEFT JOIN $table_pc_log AS log ON log.memberId = members.memberId AND YEAR(log.createDate) = %s
+    ORDER BY fullName", date("Y"));
 
     $result = $wpdb->get_results($sql);
     $result = array_map("membersMap", $result);

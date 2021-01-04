@@ -43,14 +43,17 @@ export const MemberDetails: React.FC = () => {
 	const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!member.memberId) {
-			const status = await onCreateMember(member);
-			if (status) 
+			const addStatus = await onCreateMember(member);
+			if (addStatus) 
 				onBack();
 			else
 				toast.error('Помилка збереження. Форма містить не валідні поля.');
 		} else {
-			await onUpdateMember(member);
-			toast.success('Зміни збережені.');
+			const updateStatus = await onUpdateMember(member);
+			if(updateStatus)
+				toast.success('Зміни збережені.');
+			else
+				toast.error('Помилка збереження. Форма містить не валідні поля.');
 		}
 	}
 
@@ -138,7 +141,7 @@ export const MemberDetails: React.FC = () => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Ідентифікаційний номер</label>
-					<input type='number' className='form-control' value={member.id || ''} onChange={e => onMemberUpdate('id', e.target.value)} />
+					<input type='text' className='form-control' value={member.id || ''} maxLength={12} onChange={e => onMemberUpdate('id', e.target.value)} />
 				</div>
 				<div className='col'>
 					<label className='form-label'>Паспорт №, де і ким виданий</label>

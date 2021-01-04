@@ -12,6 +12,7 @@ const App: React.FC = () => {
 			<AppRouter/>
 		</div>
 		<ToastContainer />
+		<div id='portal-container'></div>
 	</AppProvider>
 	);
 }

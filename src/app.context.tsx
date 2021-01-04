@@ -8,6 +8,7 @@ export const useApp = () => {
 	const [members, setMembers] = React.useState<Models.Member[]>([]);
 	const [credentials, setCredentials] = React.useState<Models.AppCredentials>(null);
 	const [regions, setRegions] = React.useState<Models.Region[]>([]);
+	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
 
 	const onLoadCredentials = React.useCallback(() => {
 		const userId = document.getElementById('usrInfo').dataset.info;
@@ -37,8 +38,7 @@ export const useApp = () => {
 	}
 
 	const onCreateMember = async (nextMember: Models.Member): Promise<boolean> => {
-		let status: boolean;
-		await fetch(`../wp-content/plugins/contributions/api/AddMember.php`, {
+		return await fetch(`../wp-content/plugins/contributions/api/AddMember.php`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -47,14 +47,11 @@ export const useApp = () => {
 				...nextMember, 
 				phone: unmaskPhone(nextMember.phone?.toString())
 			})
-		}).then(response => { 
-			status = response.ok
-		});
-		return status;
+		}).then(response => response.ok);
 	}
 
-	const onUpdateMember = async (nextMember: Models.Member) => {
-		await fetch(`../wp-content/plugins/contributions/api/UpdateMember.php`, {
+	const onUpdateMember = async (nextMember: Models.Member): Promise<boolean> => {
+		return await fetch(`../wp-content/plugins/contributions/api/UpdateMember.php`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -63,7 +60,7 @@ export const useApp = () => {
 				...nextMember, 
 				phone: unmaskPhone(nextMember.phone?.toString())
 			})
-		});
+		}).then(response => response.ok);
 	}
 
 	const onLoadMembersAdm = async () => {
@@ -87,12 +84,46 @@ export const useApp = () => {
 		});
 	}
 
+	const onChangeContributionStatus = async (member: Models.Member) => {
+		await fetch(`../wp-content/plugins/contributions/api/ChangeContributionStatus.php`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				memberId: member.memberId,
+				isContributed: !member.isContributed
+			} as Models.ChangeContributionStatusModel)
+		});
+		await onLoadMembersAdm();
+	}
+
+	const onDeleteMember = async (model: Models.DeleteMemberModel) => {
+		await fetch(`../wp-content/plugins/contributions/api/DeleteMember`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(model)
+		});
+		await onLoadMembersAdm();
+	}
+
+	const onShowConfirm = (member: Models.Member) => {
+		setMemberToRemove(member);
+	}
+
+	const onHideConfirm = () => {
+		setMemberToRemove(null);
+	}
+
 	return {
 		view,
 		member,
 		credentials,
 		members,
 		regions,
+		memberToRemove,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -101,6 +132,10 @@ export const useApp = () => {
 		onLoadMembersAdm,
 		onLoadRegions,
 		onUpdateMember,
+		onChangeContributionStatus,
+		onShowConfirm,
+		onHideConfirm,
+		onDeleteMember,
 	};
 }
 

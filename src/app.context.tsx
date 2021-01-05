@@ -64,7 +64,21 @@ export const useApp = () => {
 	}
 
 	const onLoadMembersAdm = async () => {
-		await fetch(`../wp-content/plugins/contributions/api/GetAllMembersAdm.php`)
+		let url: string;
+		switch(credentials.appType) {
+			case 'admin': {
+				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php`;
+				break;
+			}
+			case 'region': {
+				url = `../wp-content/plugins/contributions/api/GetMembersByRegion.php`;
+				break;
+			}
+			default: {
+				url = '';
+			}
+		}
+		await fetch(url)
 		.then(response => response.json())
 		.then((data: Models.Member[]) => { 
 			const nextMembers: Models.Member[] = data.map(x => ({ 

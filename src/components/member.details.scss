@@ -3,5 +3,11 @@
         .form-check-input {
             position: relative;
         }
+
+        &.reg-fix{
+            .form-check-input {
+                position: absolute;
+            }
+        }
     }
 }

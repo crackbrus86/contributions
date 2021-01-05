@@ -32,8 +32,11 @@ const defaultMember: Models.Member = {
 }
 
 export const MemberDetails: React.FC = () => {
-	const { member: currentMember, regions, onBack, onCreateMember, onUpdateMember } = useAppContext();
-	const [member, setMemeber] = React.useState<Models.Member>(currentMember || defaultMember);
+	const { member: currentMember, regions, credentials, onBack, onCreateMember, onUpdateMember } = useAppContext();
+	const [member, setMemeber] = React.useState<Models.Member>(currentMember || 
+		{ ...defaultMember,
+			areaId: credentials.appType === 'region' ? credentials.uid : null
+		});
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
 		const nextMember = { ...member, [key]: value };
@@ -110,6 +113,7 @@ export const MemberDetails: React.FC = () => {
 						className={classnames('form-select', 'form-control', { 'is-invalid': !member.areaId })}
 						value={member.areaId || ''}
 						onChange={e => onMemberUpdate('areaId', e.target.value)}
+						disabled={credentials.appType === 'region'}
 					>
 						<option key='0'></option>
 						{regions.map(region => <option key={region.id} value={region.id}>{region.name}</option>)}
@@ -208,8 +212,8 @@ export const MemberDetails: React.FC = () => {
 					<textarea className='form-control' rows={3} value={member.jobAddress} onChange={e => onMemberUpdate('jobAddress', e.target.value)} ></textarea>
 				</div>
 			</div>
-			<div className='mb-3 row'>
-				<div className='form-check'>
+			<div className='mb-4 row'>
+				<div className={classnames('form-check', {'reg-fix': credentials.appType === 'region'})}>
 					<input
 						className='form-check-input'
 						type='checkbox'
@@ -221,8 +225,8 @@ export const MemberDetails: React.FC = () => {
 					</label>
 				</div>
 			</div>
-			<div className='mb-3 row'>
-				<div className='form-check'>
+			<div className='mb-4 row'>
+				<div className={classnames('form-check', {'reg-fix': credentials.appType === 'region'})}>
 					<input
 						className='form-check-input'
 						type='checkbox'

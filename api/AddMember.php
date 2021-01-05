@@ -2,14 +2,15 @@
 require_once("../../../../wp-load.php");
 global $wpdb;
 
-if(current_user_can('manage_options'))
+if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
 {
     $json = file_get_contents('php://input');
     $member = json_decode($json);
     
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     if(!$member->fullName || !$member->dateOfBirth || !$member->fpuDate
-    || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport) 
+    || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport
+    || (isset($_SESSION['regionObj']) && $_SESSION['regionObj']->id != $member->areaId)) 
     {
         http_response_code(400);
         return;

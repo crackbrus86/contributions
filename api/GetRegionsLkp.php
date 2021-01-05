@@ -2,7 +2,7 @@
 require_once("../../../../wp-load.php");
 global $wpdb;
 
-if(current_user_can('manage_options'))
+if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
 {
     $table_regions = $wpdb->get_blog_prefix() . "regions";
     $sql = "SELECT

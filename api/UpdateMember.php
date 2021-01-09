@@ -30,7 +30,10 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
             jobAddress = %s,
             isInOtherFederation = %d,
             fpuDate = %s,
-            areaId = %d
+            areaId = %d,
+            class = %s,
+            rank = %s,
+            refereeCategory = %s
         WHERE memberId = %d",
             $member->fullName, 
             $member->dateOfBirth,
@@ -46,6 +49,9 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
             $member->otherFederationMembership,
             $member->fpuDate,
             $member->areaId,
+            $member->class,
+            $member->rank,
+            $member->refereeCategory,
             $member->memberId    
         );
     

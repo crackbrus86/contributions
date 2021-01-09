@@ -10,6 +10,7 @@ import { useAppContext } from '../app.context';
 import { toast } from 'react-toastify';
 import * as classnames from 'classnames';
 import MaskedInput from 'react-text-mask';
+import * as Lookups from './Lookups.json';
 
 const defaultMember: Models.Member = {
 	memberId: null,
@@ -33,10 +34,11 @@ const defaultMember: Models.Member = {
 
 export const MemberDetails: React.FC = () => {
 	const { member: currentMember, regions, credentials, onBack, onCreateMember, onUpdateMember } = useAppContext();
-	const [member, setMemeber] = React.useState<Models.Member>(currentMember || 
-		{ ...defaultMember,
-			areaId: credentials.appType === 'region' ? credentials.uid : null
-		});
+	const [member, setMemeber] = React.useState<Models.Member>(currentMember ||
+	{
+		...defaultMember,
+		areaId: credentials.appType === 'region' ? credentials.uid : null
+	});
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
 		const nextMember = { ...member, [key]: value };
@@ -47,13 +49,13 @@ export const MemberDetails: React.FC = () => {
 		e.preventDefault();
 		if (!member.memberId) {
 			const addStatus = await onCreateMember(member);
-			if (addStatus) 
+			if (addStatus)
 				onBack();
 			else
 				toast.error('Помилка збереження. Форма містить не валідні поля.');
 		} else {
 			const updateStatus = await onUpdateMember(member);
-			if(updateStatus)
+			if (updateStatus)
 				toast.success('Зміни збережені.');
 			else
 				toast.error('Помилка збереження. Форма містить не валідні поля.');
@@ -61,7 +63,7 @@ export const MemberDetails: React.FC = () => {
 	}
 
 	return <div className='member-details'>
-		<h2>{`${currentMember ? 'Редагувати' : 'Створити'} особову карту`}</h2>
+		<h2>{`${currentMember ? 'Редагувати' : 'Створити'} анкету`}</h2>
 		<div className='row mb-2 mt-2'>
 			<div className='col-lg'>
 				<button type='button' className='btn btn-primary' onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} size='1x' /> Назад</button>
@@ -72,13 +74,13 @@ export const MemberDetails: React.FC = () => {
 				<label className='form-label'>Прізвище, ім'я, по батькові</label>
 				<input
 					type='text'
-					className={classnames('form-control', { 'is-invalid': !member.fullName })} 
+					className={classnames('form-control', { 'is-invalid': !member.fullName })}
 					value={member.fullName}
 					onChange={e => onMemberUpdate('fullName', e.target.value)}
 
 				/>
 				{
-					!member.fullName && 
+					!member.fullName &&
 					<div className='invalid-feedback'>
 						Прізвище, ім'я, по батькові є обов'язковим полем!
 					</div>
@@ -119,7 +121,7 @@ export const MemberDetails: React.FC = () => {
 						{regions.map(region => <option key={region.id} value={region.id}>{region.name}</option>)}
 					</select>
 					{
-						!member.areaId && 
+						!member.areaId &&
 						<div className='invalid-feedback'>
 							Область є обов'язковим полем!
 						</div>
@@ -137,7 +139,7 @@ export const MemberDetails: React.FC = () => {
 						onChange={e => onMemberUpdate('citizenship', e.target.value)}
 					/>
 					{
-						!member.citizenship && 
+						!member.citizenship &&
 						<div className='invalid-feedback'>
 							Громадянство є обов'язковим полем!
 						</div>
@@ -156,11 +158,11 @@ export const MemberDetails: React.FC = () => {
 						onChange={e => onMemberUpdate('passport', e.target.value)}
 					></textarea>
 					{
-						!member.passport && 
+						!member.passport &&
 						<div className='invalid-feedback'>
 							Паспорт №, де і ким виданий є обов'язковим полем!
 						</div>
-					}					
+					}
 				</div>
 			</div>
 			<div className='mb-3 row'>
@@ -176,11 +178,11 @@ export const MemberDetails: React.FC = () => {
 							mask={['(', /[0-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
 						/>
 						{
-							!member.phone && 
+							!member.phone &&
 							<div className='invalid-feedback'>
 								Контактні телефони, факс є обов'язковим полем!
 							</div>
-						}						
+						}
 					</div>
 				</div>
 				<div className='col'>
@@ -212,8 +214,40 @@ export const MemberDetails: React.FC = () => {
 					<textarea className='form-control' rows={3} value={member.jobAddress} onChange={e => onMemberUpdate('jobAddress', e.target.value)} ></textarea>
 				</div>
 			</div>
+			<div className='mb-3 row'>
+				<div className='col'>
+					<label className='form-label'>Розряд</label>
+					<select
+						className='form-select form-control'
+						value={member.class || ''}
+						onChange={e => onMemberUpdate('class', e.target.value)}>
+						<option key='0'></option>
+						{Lookups.classes.map(cl => <option key={cl.id} value={cl.id}>{cl.title}</option>)}
+					</select>
+				</div>
+				<div className='col'>
+					<label className='form-label'>Звання</label>
+					<select
+						className='form-select form-control'
+						value={member.rank || ''}
+						onChange={e => onMemberUpdate('rank', e.target.value)}>
+						<option key='0'></option>
+						{Lookups.ranks.map(rn => <option key={rn.id} value={rn.id}>{rn.title}</option>)}
+					</select>
+				</div>
+				<div className='col'>
+					<label className='form-label'>Суддівська категорія</label>
+					<select
+						className='form-select form-control'
+						value={member.refereeCategory || ''}
+						onChange={e => onMemberUpdate('refereeCategory', e.target.value)}>
+						<option key='0'></option>
+						{Lookups.refereeCategories.map(rc => <option key={rc.id} value={rc.id}>{rc.title}</option>)}
+					</select>
+				</div>
+			</div>
 			<div className='mb-4 row'>
-				<div className={classnames('form-check', {'reg-fix': credentials.appType === 'region'})}>
+				<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
 					<input
 						className='form-check-input'
 						type='checkbox'
@@ -226,7 +260,7 @@ export const MemberDetails: React.FC = () => {
 				</div>
 			</div>
 			<div className='mb-4 row'>
-				<div className={classnames('form-check', {'reg-fix': credentials.appType === 'region'})}>
+				<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
 					<input
 						className='form-check-input'
 						type='checkbox'

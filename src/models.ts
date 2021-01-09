@@ -20,6 +20,19 @@ export interface Member {
 	fpuDate: Date,
 	area: string,
 	areaId: number,
+	isContributed: boolean,
+	class?: string,
+	rank?: string,
+	refereeCategory?: string
+}
+
+export interface Membership {
+	memberId: number,
+	fullName: string,
+	dateOfBirth: Date,
+	fpuDate: Date,
+	area: string,
+	areaId: number,
 	isContributed: boolean
 }
 

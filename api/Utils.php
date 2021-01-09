@@ -7,3 +7,10 @@ function membersMap($member)
     $nextMember->isContributed = (bool) $nextMember->isContributed;
     return $nextMember;
 }
+
+function membershipMap($membership)
+{
+    $nextMembership = $membership;
+    $nextMembership->isContributed = (bool) $nextMembership->isContributed;
+    return $nextMembership;
+}

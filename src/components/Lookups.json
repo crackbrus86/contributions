@@ -1,0 +1,64 @@
+{
+    "classes": [
+        {
+            "id": "msumk",
+            "title": "МСУМК"
+        },
+        {
+            "id": "msu",
+            "title": "МСУ"
+        },
+        {
+            "id": "kmsu",
+            "title": "КМСУ"
+        },
+        {
+            "id": "1st",
+            "title": "I"
+        },
+        {
+            "id": "2nd",
+            "title": "II"
+        },
+        {
+            "id": "3rd",
+            "title": "III"
+        }
+    ],
+    "ranks": [
+        {
+            "id": "zmsu",
+            "title": "ЗМСУ"
+        },
+        {
+            "id": "ztu",
+            "title": "ЗТУ"
+        },
+        {
+            "id": "zpfksu",
+            "title": "ЗПФКСУ"
+        }
+    ],
+    "refereeCategories": [
+        {
+            "id": "mk1",
+            "title": "МК1"
+        },
+        {
+            "id": "mk2",
+            "title": "МК2"
+        },
+        {
+            "id": "mk",
+            "title": "МК"
+        },
+        {
+            "id": "1stCat",
+            "title": "I"
+        },
+        {
+            "id": "2ndCat",
+            "title": "II"
+        }
+    ]
+}

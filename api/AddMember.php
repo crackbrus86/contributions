@@ -30,8 +30,11 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
         jobAddress,
         isInOtherFederation,
         fpuDate,
-        areaId
-    ) VALUES (%s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %d, %s, %d)", 
+        areaId,
+        class,
+        rank,
+        refereeCategory
+    ) VALUES (%s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %d, %s, %d, %s, %s, %s)", 
         $member->fullName, 
         $member->dateOfBirth,
         $member->citizenship,
@@ -45,7 +48,10 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
         $member->jobAddress,
         $member->otherFederationMembership,
         $member->fpuDate,
-        $member->areaId
+        $member->areaId,
+        $member->class,
+        $member->rank,
+        $member->refereeCategory
     );
     
     $wpdb->query($sql);

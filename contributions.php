@@ -27,6 +27,19 @@ function getRegionClient()
 }
 add_shortcode('pcRegion', 'getRegionClient');
 
+function getCommonClient()
+{
+    wp_register_script('clientAppCommon', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
+    wp_enqueue_script('clientAppCommon');
+    ?>
+        <div id="usrInfo" data-info="0"></div>
+        <div class="container-fluid">
+            <div id="cntrAdmApp"></div>
+        </div>
+    <?php
+}
+add_shortcode('pcCommon', 'getCommonClient');
+
 class Contributions {
     public function initSettings(){
         add_menu_page("Contributions", "Члени ФПУ", "manage_options", "contributions", array("Contributions", "contributionsAdmin"));

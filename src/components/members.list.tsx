@@ -1,12 +1,11 @@
 import React from 'react';
-import * as Models from '../models';
 import TableHeaders from "./TableHeaders.json";
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUserEdit, faSpinner, faUserSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
-import {useAppContext} from '../app.context';
+import { useAppContext } from '../app.context';
 
 export const MembersList: React.FC = () => {
     const { members, onAddMember, onEdit, onLoadMembersAdm, onChangeContributionStatus, onShowConfirm } = useAppContext();
@@ -23,7 +22,7 @@ export const MembersList: React.FC = () => {
     }, [])
 
     return <div className='members-list'>
-        <h2>Внески членів ФПУ</h2>
+        <h2>Анкети членства ФПУ</h2>
         <div className='row mb-2 mt-2'>
             <div className='col-lg'>
                 <button type='button' className='btn btn-primary' onClick={onAddMember}><FontAwesomeIcon icon={faUserPlus} size='1x' /> Додати персону</button>
@@ -41,28 +40,38 @@ export const MembersList: React.FC = () => {
                     <table className='table table-hover table-striped'>
                         <thead>
                             <tr>
-                                <th key='btn1'></th>
-                                <th key='btn2'></th>
-                                {TableHeaders.map(header => <th key={header.id} scope='col'>{header.title}</th>)}
+                                <th key='btn1' style={{ width: '30px' }}></th>
+                                <th key='btn2' style={{ width: '30px' }}></th>
+                                {TableHeaders.map(header => <th key={header.id} scope='col' style={{ width: header.width }}>{header.title}</th>)}
                             </tr>
                         </thead>
                         <tbody>
                             {members.map((member, index) => <tr key={member.memberId}>
-                                <td key='btn1'><FontAwesomeIcon icon={faUserEdit} size='2x' className='table__action-btn' onClick={() => onEdit(member)} /></td>
-                                <td key='btn2'><FontAwesomeIcon icon={faUserSlash} size='2x' className='table__action-btn' onClick={() => onShowConfirm(member)} /></td>
+                                <td key='btn1'>
+                                    <FontAwesomeIcon
+                                        icon={faUserEdit}
+                                        size='1x'
+                                        className='table__action-btn'
+                                        onClick={() => onEdit(member)}
+                                        title='Відкрити'
+                                    />
+                                </td>
+                                <td key='btn2'>
+                                    <FontAwesomeIcon
+                                        icon={faUserSlash}
+                                        size='1x'
+                                        className='table__action-btn'
+                                        onClick={() => onShowConfirm(member)}
+                                        title='Видалити'
+                                    />
+                                </td>
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>
-                                <td key='dateOfBirth'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>
-                                <td key='citizenship'>{member.citizenship}</td>
-                                <td key='id'>{member.id}</td>
-                                <td key='passport'>{member.passport}</td>
-                                <td key='address'>{member.address}</td>
-                                <td key='phone'>{member.phone}</td>
-                                <td key='email'>{member.email}</td>
-                                <td key='otherFederationMembership'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
-                                <td key='fpuDate'>{moment(member.fpuDate).format('DD/MM/YYYY')}</td>
-                                <td key='area'>{member.area}</td>
-                                <td key='isContributed'>
+                                <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>
+                                <td key='otherFederationMembership' className='td-align-center'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
+                                <td key='fpuDate' className='td-align-center'>{moment(member.fpuDate).format('DD/MM/YYYY')}</td>
+                                <td key='area' className='td-align-center'>{member.area}</td>
+                                <td key='isContributed' className='td-align-center'>
                                     <FontAwesomeIcon
                                         className='table__action-icon'
                                         icon={member.isContributed ? faCheckSquare : faSquare}

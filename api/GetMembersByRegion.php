@@ -27,7 +27,10 @@ if(isset($_SESSION['regionObj']))
         fpuDate,
         areaId,
         regions.name as area,
-        CASE WHEN log.contributionId IS NOT NULL THEN 1 ELSE 0 END as isContributed
+        CASE WHEN log.contributionId IS NOT NULL THEN 1 ELSE 0 END as isContributed,
+        class,
+        rank,
+        refereeCategory
     FROM $table_pc_members AS members
     JOIN $table_regions AS regions ON regions.id = members.areaId
     LEFT JOIN $table_pc_log AS log ON log.memberId = members.memberId AND YEAR(log.createDate) = %s

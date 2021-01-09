@@ -9,6 +9,7 @@ export const useApp = () => {
 	const [credentials, setCredentials] = React.useState<Models.AppCredentials>(null);
 	const [regions, setRegions] = React.useState<Models.Region[]>([]);
 	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
+	const [membershipData, setMembershipData] = React.useState<Models.Membership[]>([]);
 
 	const onLoadCredentials = React.useCallback(() => {
 		const userId = document.getElementById('usrInfo').dataset.info;
@@ -131,6 +132,35 @@ export const useApp = () => {
 		setMemberToRemove(null);
 	}
 
+	const showMembersList = React.useMemo<boolean>(() => {
+		return view === Models.View.MembersList && !!credentials && credentials.appType !== "common";
+	}, [view, credentials]);
+
+	const showMemberDetails = React.useMemo<boolean>(() => {
+		return view === Models.View.MemberDetails && !!credentials && credentials.appType !== "common";
+	}, [view, credentials]);
+
+	const showMembership = React.useMemo<boolean>(() => {
+		return !!credentials && credentials.appType === "common";
+	}, [credentials]);
+
+	const onLoadMembership = async () => {
+		await fetch(`../wp-content/plugins/contributions/api/GetMembership.php`)
+			.then(response => response.json())
+			.then((data: Models.Membership[]) => {
+				const memberships: Models.Membership[] = data.map(x => ({
+					...x,
+					dateOfBirth: new Date(x.dateOfBirth),
+					fpuDate: new Date(x.fpuDate)
+				}));
+				setMembershipData(memberships);
+			});
+	}
+
+	const membershipRegions = React.useMemo(() => {
+		return regions.filter(region => membershipData.find(x => x.areaId == region.id));
+	}, [regions, membershipData])
+
 	return {
 		view,
 		member,
@@ -138,6 +168,10 @@ export const useApp = () => {
 		members,
 		regions,
 		memberToRemove,
+		showMembersList,
+		showMemberDetails,
+		showMembership,
+		membershipRegions,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -150,6 +184,7 @@ export const useApp = () => {
 		onShowConfirm,
 		onHideConfirm,
 		onDeleteMember,
+		onLoadMembership,
 	};
 }
 

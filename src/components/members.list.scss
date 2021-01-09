@@ -1,7 +1,6 @@
 .members-list {
     .table {
         table-layout: fixed;
-        font-size: 0.7em;
         
         &__action-btn{
             color: #007bff;
@@ -9,6 +8,22 @@
         }
         &__action-icon {
             cursor: pointer;
+        }
+
+        thead th{
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            white-space: nowrap;
+            td {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                &.td-align-center {
+                    text-align: center;
+                }
+            }
         }
     }
 }

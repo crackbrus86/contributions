@@ -19,7 +19,10 @@ $sql = "CREATE TABLE IF NOT EXISTS {$members_table} (
 	`jobAddress` VARCHAR(300) NULL,
 	`isInOtherFederation` BIT NOT NULL,
 	`fpuDate` DATETIME NOT NULL,
-	`areaId` INT NOT NULL 
+	`areaId` INT NOT NULL,
+	`class` VARCHAR(10) NULL,
+	`rank` VARCHAR(10) NULL,
+	`refereeCategory` VARCHAR(10) NULL
 ) {$charset_collate}";
 dbDelta($sql);
 

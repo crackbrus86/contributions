@@ -2,11 +2,12 @@
 require_once("../../../../wp-load.php");
 global $wpdb;
 $user_id = $_GET['user_id'];
+$app_type = $_GET['app_type'];
 $credentials = new StdClass();
 $current_uid = get_current_user_id();
 $region_id = $_SESSION['regionObj']->id;
 
-if(!!$user_id && $user_id == $current_uid)
+if(!!$user_id && $user_id == $current_uid && $app_type == 'none')
 {
     $credentials->uid = $current_uid;
     $credentials->app_type = 'admin';

@@ -17,6 +17,7 @@ function getRegionClient()
     { 
         ?>
             <div id="usrInfo" data-info="<?php print($_SESSION['regionObj']->id); ?>"></div>
+            <div id="appType" data-info="reg"></div>
             <div class="container-fluid">
                 <div id="cntrAdmApp"></div>
             </div>
@@ -33,6 +34,7 @@ function getCommonClient()
     wp_enqueue_script('clientAppCommon');
     ?>
         <div id="usrInfo" data-info="0"></div>
+        <div id="appType" data-info="none"></div>
         <div class="container-fluid">
             <div id="cntrAdmApp"></div>
         </div>
@@ -50,6 +52,7 @@ class Contributions {
         wp_enqueue_script('clientApp');
         ?>
         <div id="usrInfo" data-info="<?php print(get_current_user_id()); ?>"></div>
+        <div id="appType" data-info="none"></div>
         <div class="container-fluid">
             <div id="cntrAdmApp"></div>
         </div>

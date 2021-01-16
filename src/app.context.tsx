@@ -13,7 +13,8 @@ export const useApp = () => {
 
 	const onLoadCredentials = React.useCallback(() => {
 		const userId = document.getElementById('usrInfo').dataset.info;
-		fetch(`../wp-content/plugins/contributions/api/GetCurrentCredentials.php?user_id=${userId}`)
+		const appType = document.getElementById('appType').dataset.info;
+		fetch(`../wp-content/plugins/contributions/api/GetCurrentCredentials.php?user_id=${userId}&app_type=${appType}`)
 			.then(response => response.json())
 			.then((data: Models.ServerCredentials) => {
 				const nextCredentials: Models.AppCredentials = {
@@ -157,10 +158,6 @@ export const useApp = () => {
 			});
 	}
 
-	const membershipRegions = React.useMemo(() => {
-		return regions.filter(region => membershipData.find(x => x.areaId == region.id));
-	}, [regions, membershipData])
-
 	return {
 		view,
 		member,
@@ -171,7 +168,7 @@ export const useApp = () => {
 		showMembersList,
 		showMemberDetails,
 		showMembership,
-		membershipRegions,
+		membershipData,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,

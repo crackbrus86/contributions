@@ -19,6 +19,8 @@ $sql = "CREATE TABLE IF NOT EXISTS {$members_table} (
 	`jobAddress` VARCHAR(300) NULL,
 	`isInOtherFederation` BIT NOT NULL,
 	`fpuDate` DATETIME NOT NULL,
+	`lastAlterEventDate` DATETIME NULL,
+	`reFpuDate` DATETIME NULL,
 	`areaId` INT NOT NULL,
 	`class` VARCHAR(10) NULL,
 	`rank` VARCHAR(10) NULL,

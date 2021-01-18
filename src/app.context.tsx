@@ -87,6 +87,8 @@ export const useApp = () => {
 				...x,
 				dateOfBirth: new Date(x.dateOfBirth),
 				fpuDate: new Date(x.fpuDate),
+				lastAlterEventDate: new Date(x.lastAlterEventDate),
+				reFpuDate: new Date(x.reFpuDate)
 			}));
 			setMembers(nextMembers); 
 		});
@@ -152,7 +154,7 @@ export const useApp = () => {
 				const memberships: Models.Membership[] = data.map(x => ({
 					...x,
 					dateOfBirth: new Date(x.dateOfBirth),
-					fpuDate: new Date(x.fpuDate)
+					fpuDate: new Date(x.fpuDate)					
 				}));
 				setMembershipData(memberships);
 			});

@@ -18,6 +18,8 @@ export interface Member {
 	jobAddress: string,
 	otherFederationMembership: boolean,
 	fpuDate: Date,
+	lastAlterEventDate?: Date,
+	reFpuDate?: Date,
 	area: string,
 	areaId: number,
 	isContributed: boolean,

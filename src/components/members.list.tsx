@@ -6,6 +6,7 @@ import { faUserPlus, faUserEdit, faSpinner, faUserSlash } from '@fortawesome/fre
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
 import { useAppContext } from '../app.context';
+import * as classnames from 'classnames';
 
 export const MembersList: React.FC = () => {
     const { members, onAddMember, onEdit, onLoadMembersAdm, onChangeContributionStatus, onShowConfirm } = useAppContext();
@@ -67,9 +68,12 @@ export const MembersList: React.FC = () => {
                                 </td>
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>
-                                <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>
-                                <td key='otherFederationMembership' className='td-align-center'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
+                                <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>                                
                                 <td key='fpuDate' className='td-align-center'>{moment(member.fpuDate).format('DD/MM/YYYY')}</td>
+                                <td key='otherFederationMembership' className='td-align-center'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
+                                <td key='reFpuDate' className={classnames('td-align-center', {'highlight': member.otherFederationMembership })}>{
+                                    member.otherFederationMembership ? moment(member.reFpuDate).format('DD/MM/YYYY') : null
+                                }</td>
                                 <td key='area' className='td-align-center'>{member.area}</td>
                                 <td key='isContributed' className='td-align-center'>
                                     <FontAwesomeIcon

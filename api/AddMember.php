@@ -10,7 +10,8 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     if(!$member->fullName || !$member->dateOfBirth || !$member->fpuDate
     || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport
-    || (isset($_SESSION['regionObj']) && $_SESSION['regionObj']->id != $member->areaId)) 
+    || !$member->id
+    || (!!$member->otherFederationMembership && (!$member->lastAlterEventDate || !$member->reFpuDate))) 
     {
         http_response_code(400);
         return;
@@ -33,8 +34,10 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
         areaId,
         class,
         rank,
-        refereeCategory
-    ) VALUES (%s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %d, %s, %d, %s, %s, %s)", 
+        refereeCategory,
+        lastAlterEventDate,
+        reFpuDate
+    ) VALUES (%s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %d, %s, %d, %s, %s, %s, %s, %s)", 
         $member->fullName, 
         $member->dateOfBirth,
         $member->citizenship,
@@ -51,7 +54,9 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
         $member->areaId,
         $member->class,
         $member->rank,
-        $member->refereeCategory
+        $member->refereeCategory,
+        $member->lastAlterEventDate,
+        $member->reFpuDate
     );
     
     $wpdb->query($sql);

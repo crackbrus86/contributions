@@ -8,12 +8,13 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
     $member = json_decode($json);
     if(!$member->fullName || !$member->dateOfBirth || !$member->fpuDate
     || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport
-    || (isset($_SESSION['regionObj']) && $_SESSION['regionObj']->id != $member->areaId)) 
+    || !$member->id
+    || ($member->otherFederationMembership && (!$member->lastAlterEventDate || !$member->reFpuDate))) 
     {
         http_response_code(400);
         return;
     }
-    
+
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     $sql = $wpdb->prepare("UPDATE $table_pc_members 
         SET 
@@ -33,7 +34,9 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
             areaId = %d,
             class = %s,
             rank = %s,
-            refereeCategory = %s
+            refereeCategory = %s,
+            lastAlterEventDate = %s,
+            reFpuDate = %s
         WHERE memberId = %d",
             $member->fullName, 
             $member->dateOfBirth,
@@ -52,6 +55,8 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
             $member->class,
             $member->rank,
             $member->refereeCategory,
+            $member->lastAlterEventDate,
+            $member->reFpuDate,
             $member->memberId    
         );
     

@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import * as classnames from 'classnames';
 import MaskedInput from 'react-text-mask';
 import * as Lookups from './Lookups.json';
+import * as moment from 'moment';
+import { nextTick } from 'process';
 
 const defaultMember: Models.Member = {
 	memberId: null,
@@ -42,6 +44,15 @@ export const MemberDetails: React.FC = () => {
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
 		const nextMember = { ...member, [key]: value };
+
+		if(key === 'lastAlterEventDate')
+			nextMember.reFpuDate = nextMember.lastAlterEventDate ? moment(nextMember.lastAlterEventDate).add(1, 'y').toDate() : null;
+			
+		if(key === 'otherFederationMembership' && !value) {
+			nextMember.lastAlterEventDate = new Date(null);
+			nextMember.reFpuDate = new Date(null);
+		}
+
 		setMemeber(nextMember);
 	}
 
@@ -49,14 +60,20 @@ export const MemberDetails: React.FC = () => {
 		e.preventDefault();
 		if (!member.memberId) {
 			const addStatus = await onCreateMember(member);
-			if (addStatus)
+			if (addStatus){
+				if(member.otherFederationMembership && !defaultMember.otherFederationMembership)
+					toast.warning('Повторне набуття членства фпу відбувається з дозволу президії фпу');
 				onBack();
+			}
 			else
 				toast.error('Помилка збереження. Форма містить не валідні поля.');
 		} else {
 			const updateStatus = await onUpdateMember(member);
-			if (updateStatus)
+			if (updateStatus){
 				toast.success('Зміни збережені.');
+				if(member.otherFederationMembership && !currentMember.otherFederationMembership)
+					toast.warning('Повторне набуття членства фпу відбувається з дозволу президії фпу');
+			}
 			else
 				toast.error('Помилка збереження. Форма містить не валідні поля.');
 		}
@@ -147,7 +164,19 @@ export const MemberDetails: React.FC = () => {
 				</div>
 				<div className='col'>
 					<label className='form-label'>Ідентифікаційний номер</label>
-					<input type='text' className='form-control' value={member.id || ''} maxLength={12} onChange={e => onMemberUpdate('id', e.target.value)} />
+					<input
+						type='text'
+						className={classnames('form-control', { 'is-invalid': !member.id })}
+						value={member.id || ''}
+						maxLength={12}
+						onChange={e => onMemberUpdate('id', e.target.value)}
+					/>
+					{
+						!member.id &&
+						<div className='invalid-feedback'>
+							Ідентифікаційний номер є обов'язковим полем!
+						</div>
+					}
 				</div>
 				<div className='col'>
 					<label className='form-label'>Паспорт №, де і ким виданий</label>
@@ -247,29 +276,61 @@ export const MemberDetails: React.FC = () => {
 				</div>
 			</div>
 			<div className='mb-4 row'>
-				<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
-					<input
-						className='form-check-input'
-						type='checkbox'
-						checked={member.otherFederationMembership}
-						onChange={() => onMemberUpdate('otherFederationMembership', !member.otherFederationMembership)}
-					/>
-					<label className='form-check-label'>
-						Членство в інших федераціях
-					</label>
+				<div className='col-md-4'>
+					<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
+						<input
+							className='form-check-input'
+							type='checkbox'
+							checked={member.otherFederationMembership}
+							onChange={() => onMemberUpdate('otherFederationMembership', !member.otherFederationMembership)}
+						/>
+						<label className='form-check-label'>
+							Членство в інших федераціях
+						</label>
+					</div>
 				</div>
+				{
+					member.otherFederationMembership &&
+					<>
+						<div className='col-md-4'>
+							<label className='form-label'>Дата останньої участі у заходах інших федерацій</label><br />
+							<DatePicker
+								className={classnames('form-control', 
+									{ 'is-invalid': !!member.otherFederationMembership && (!member.lastAlterEventDate || !(member.lastAlterEventDate instanceof Date)) }
+								)}
+								selected={member.lastAlterEventDate}
+								showYearDropdown
+								showMonthDropdown
+								dateFormat='dd/MM/yyyy'
+								onChange={date => onMemberUpdate('lastAlterEventDate', date)}
+							/>
+						</div>
+						<div className='col-md-4'>
+							<label className='form-label'>Дата повторного набуття членства</label><br />
+							<DatePicker
+								className={classnames('form-control')}
+								selected={member.reFpuDate}
+								disabled
+								dateFormat='dd/MM/yyyy'
+								onChange={date => onMemberUpdate('lastAlterEventDate', date)}
+							/>
+						</div>
+					</>
+				}
 			</div>
 			<div className='mb-4 row'>
-				<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
-					<input
-						className='form-check-input'
-						type='checkbox'
-						checked={member.isContributed}
-						onChange={() => onMemberUpdate('isContributed', !member.isContributed)}
-					/>
-					<label className='form-check-label'>
-						Внесок сплачено
-					</label>
+				<div className='col'>
+					<div className={classnames('form-check', { 'reg-fix': credentials.appType === 'region' })}>
+						<input
+							className='form-check-input'
+							type='checkbox'
+							checked={member.isContributed}
+							onChange={() => onMemberUpdate('isContributed', !member.isContributed)}
+						/>
+						<label className='form-check-label'>
+							Внесок сплачено
+						</label>
+					</div>
 				</div>
 			</div>
 			<div>

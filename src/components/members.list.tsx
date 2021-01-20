@@ -2,15 +2,30 @@ import React from 'react';
 import TableHeaders from "./TableHeaders.json";
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faUserEdit, faSpinner, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faUserEdit, faSpinner, faUserSlash, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
 import { useAppContext } from '../app.context';
 import * as classnames from 'classnames';
 
 export const MembersList: React.FC = () => {
-    const { members, onAddMember, onEdit, onLoadMembersAdm, onChangeContributionStatus, onShowConfirm } = useAppContext();
+    const {
+        members,
+        regions,
+        filter,
+        showAreaFilter,
+        onAddMember,
+        onEdit,
+        onLoadMembersAdm,
+        onChangeContributionStatus,
+        onShowConfirm,
+        onChangeYearFilter,
+        onChangeAreaFilter,
+        onResetFilter
+    } = useAppContext();
+
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [showFilter, setShowFilter] = React.useState<boolean>(false);
 
     const onLoadMembers = async () => {
         setIsLoading(true);
@@ -20,15 +35,42 @@ export const MembersList: React.FC = () => {
 
     React.useEffect(() => {
         onLoadMembers()
-    }, [])
+    }, [filter])
+
+    const onToggleShowFilter = () => {
+        setShowFilter(!showFilter);
+        if(showFilter) onResetFilter();
+    }
 
     return <div className='members-list'>
         <h2>Анкети членства ФПУ</h2>
         <div className='row mb-2 mt-2'>
             <div className='col-lg'>
-                <button type='button' className='btn btn-primary' onClick={onAddMember}><FontAwesomeIcon icon={faUserPlus} size='1x' /> Додати персону</button>
+                <button type='button' className='btn btn-primary' onClick={onAddMember}><FontAwesomeIcon icon={faUserPlus} size='1x' /> Додати анкету</button>
+                <button type='button' className={classnames('btn ml-2', { 'btn-secondary': !showFilter, 'btn-success': showFilter })} onClick={onToggleShowFilter} >
+                    <FontAwesomeIcon icon={faFilter} />
+                </button>
             </div>
         </div>
+        {
+            showFilter &&
+            <div className='row mb-2'>
+                <div className='col-2'>
+                    <label className='form-label'>Фільтр за роком</label><br/>
+                    <input value={filter.year} type='number' onChange={e => onChangeYearFilter(e.target.value)} />
+                </div>
+                {
+                    showAreaFilter &&
+                    <div className='col-3'>
+                        <label className='form-label'>Фільтр за областю</label><br/>
+                        <select value={filter.areaId} className='form-control form-select' onChange={e => onChangeAreaFilter(e.target.value)}>
+                            <option value={0}>Всі</option>
+                            {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                        </select>
+                    </div>
+                }
+            </div>
+        }
         <div className='row'>
             <div className='col-lg'>
                 {members.length === 0 &&

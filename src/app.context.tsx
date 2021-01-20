@@ -10,6 +10,25 @@ export const useApp = () => {
 	const [regions, setRegions] = React.useState<Models.Region[]>([]);
 	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
 	const [membershipData, setMembershipData] = React.useState<Models.Membership[]>([]);
+	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0 });
+
+	const onChangeYearFilter = (value: string) => {
+		const nextYear = Number(value);
+		const nextFilter: Models.Filter = {
+			...filter,
+			year: isNaN(nextYear) || nextYear === 0 || nextYear > new Date().getFullYear() ? new Date().getFullYear() : nextYear,
+		};
+		setFilter(nextFilter);
+	}
+
+	const onChangeAreaFilter = (value: string) => {
+		const nextFilter: Models.Filter = { ...filter, areaId: Number(value) };
+		setFilter(nextFilter);
+	}
+
+	const onResetFilter = () => {
+		setFilter({ year: new Date().getFullYear(), areaId: 0 });
+	}
 
 	const onLoadCredentials = React.useCallback(() => {
 		const userId = document.getElementById('usrInfo').dataset.info;
@@ -69,7 +88,7 @@ export const useApp = () => {
 		let url: string;
 		switch(credentials.appType) {
 			case 'admin': {
-				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php`;
+				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php?year=${filter.year}&areaId=${filter.areaId}`;
 				break;
 			}
 			case 'region': {
@@ -147,6 +166,8 @@ export const useApp = () => {
 		return !!credentials && credentials.appType === "common";
 	}, [credentials]);
 
+	const showAreaFilter = !!credentials && credentials.appType !== "region";
+
 	const onLoadMembership = async () => {
 		await fetch(`../wp-content/plugins/contributions/api/GetMembership.php`)
 			.then(response => response.json())
@@ -171,6 +192,8 @@ export const useApp = () => {
 		showMemberDetails,
 		showMembership,
 		membershipData,
+		filter,
+		showAreaFilter,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -184,6 +207,9 @@ export const useApp = () => {
 		onHideConfirm,
 		onDeleteMember,
 		onLoadMembership,
+		onChangeYearFilter,
+		onChangeAreaFilter,
+		onResetFilter
 	};
 }
 

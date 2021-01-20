@@ -59,5 +59,10 @@ export interface ChangeContributionStatusModel {
 }
 
 export interface DeleteMemberModel {
-	memberId: number,
+	memberId: number
+}
+
+export interface Filter {
+	year: number,
+	areaId: number
 }

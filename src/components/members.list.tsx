@@ -7,25 +7,24 @@ import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
 import { useAppContext } from '../app.context';
 import * as classnames from 'classnames';
+import { Filter } from './filter';
 
 export const MembersList: React.FC = () => {
     const {
         members,
-        regions,
         filter,
-        showAreaFilter,
+        credentials,
+        displaySmallMode,
         onAddMember,
         onEdit,
         onLoadMembersAdm,
         onChangeContributionStatus,
         onShowConfirm,
-        onChangeYearFilter,
-        onChangeAreaFilter,
         onResetFilter
     } = useAppContext();
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [showFilter, setShowFilter] = React.useState<boolean>(false);
+    const [showFilter, setShowFilter] = React.useState<boolean>(filter.year != new Date().getFullYear() || filter.areaId !== 0);
 
     const onLoadMembers = async () => {
         setIsLoading(true);
@@ -52,35 +51,17 @@ export const MembersList: React.FC = () => {
                 </button>
             </div>
         </div>
-        {
-            showFilter &&
-            <div className='row mb-2'>
-                <div className='col-2'>
-                    <label className='form-label'>Фільтр за роком</label><br/>
-                    <input value={filter.year} type='number' onChange={e => onChangeYearFilter(e.target.value)} />
-                </div>
-                {
-                    showAreaFilter &&
-                    <div className='col-3'>
-                        <label className='form-label'>Фільтр за областю</label><br/>
-                        <select value={filter.areaId} className='form-control form-select' onChange={e => onChangeAreaFilter(e.target.value)}>
-                            <option value={0}>Всі</option>
-                            {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                        </select>
-                    </div>
-                }
-            </div>
-        }
+        {showFilter && <Filter />}
         <div className='row'>
             <div className='col-lg'>
                 {members.length === 0 &&
                     <div className='alert alert-dark' role='alert'>
-                        {!isLoading && `Не додано жодної персони.`}
+                        {!isLoading && `Не додано жодної анкети.`}
                         {isLoading && <div>Дані завантажуються... <FontAwesomeIcon icon={faSpinner} spin /></div>}
                     </div>
                 }
                 {members.length > 0 &&
-                    <table className='table table-hover table-striped'>
+                    <table className={classnames('table table-hover table-striped', {'table-reduced': displaySmallMode})}>
                         <thead>
                             <tr>
                                 <th key='btn1' style={{ width: '30px' }}></th>

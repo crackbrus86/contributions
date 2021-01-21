@@ -4,6 +4,15 @@ global $wpdb;
 define('API_DIR', plugin_dir_path(__FILE__));
 require_once(API_DIR . "./Utils.php");
 
+$year = $_GET["year"];
+$areaId = $_GET["areaId"];
+
+if($year == NULL || $areaId == NULL)
+{
+    http_response_code(400);
+    return;
+}
+
 $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
 $table_regions = $wpdb->get_blog_prefix() . "regions";
 $table_pc_log = $wpdb->get_blog_prefix() . "pc_log";
@@ -18,7 +27,8 @@ $sql = $wpdb->prepare("SELECT
 FROM $table_pc_members AS members
 JOIN $table_regions AS regions ON regions.id = members.areaId
 LEFT JOIN $table_pc_log AS log ON log.memberId = members.memberId AND YEAR(log.createDate) = %s
-ORDER BY fullName", date("Y"));
+WHERE regions.id = %d OR %d = 0
+ORDER BY regions.id, fullName", $year, $areaId, $areaId);
 
 $result = $wpdb->get_results($sql);
 $result = array_map("membershipMap", $result);

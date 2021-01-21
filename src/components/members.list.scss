@@ -1,6 +1,16 @@
 .members-list {
     .table {
         table-layout: fixed;
+
+        &.table-reduced {
+            font-size: 0.8em;
+            thead th:nth-child(8), thead th:nth-child(9) {
+                width: 80px!important;
+            }
+            .table__action-btn {
+                font-size: 1.2em;
+            }
+        }
         
         &__action-btn{
             color: #007bff;

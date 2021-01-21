@@ -10,7 +10,7 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     if(!$member->fullName || !$member->dateOfBirth || !$member->fpuDate
     || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport
-    || !$member->id
+    || !$member->id || !$member->year
     || (!!$member->otherFederationMembership && (!$member->lastAlterEventDate || !$member->reFpuDate))) 
     {
         http_response_code(400);
@@ -65,7 +65,7 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
     {
         $table_pc_log = $wpdb->get_blog_prefix() . "pc_log";
         $sql = $wpdb->prepare("INSERT INTO $table_pc_log (memberId, createDate) 
-        VALUES (%d, %s)", $wpdb->insert_id, date("Y-m-d h:i:s"));
+        VALUES (%d, %s)", $wpdb->insert_id, date("Y-m-d h:i:s", mktime(date("h"), date("i"), date("s"), date("m"), date("d"), $member->year)));
         $wpdb->query($sql);
     }
 } else {

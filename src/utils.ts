@@ -7,3 +7,11 @@ export function unmaskPhone(phone: string): number
     }
 
 }
+
+export function phoneToMask(phone: string): string {
+    try{
+        return phone.substr(2);
+    }catch{
+        return null;
+    }
+}

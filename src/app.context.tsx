@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Models from './models';
-import { unmaskPhone } from './utils';
+import { phoneToMask, unmaskPhone } from './utils';
 
 export const useApp = () => {
 	const [view, setView] = React.useState<Models.View>(Models.View.MembersList);
@@ -66,7 +66,8 @@ export const useApp = () => {
 			},
 			body: JSON.stringify({
 				...nextMember, 
-				phone: unmaskPhone(nextMember.phone?.toString())
+				phone: unmaskPhone(nextMember.phone?.toString()),
+				year: filter.year
 			})
 		}).then(response => response.ok);
 	}
@@ -79,7 +80,8 @@ export const useApp = () => {
 			},
 			body: JSON.stringify({
 				...nextMember, 
-				phone: unmaskPhone(nextMember.phone?.toString())
+				phone: unmaskPhone(nextMember.phone?.toString()),
+				year: filter.year
 			})
 		}).then(response => response.ok);
 	}
@@ -92,7 +94,7 @@ export const useApp = () => {
 				break;
 			}
 			case 'region': {
-				url = `../wp-content/plugins/contributions/api/GetMembersByRegion.php`;
+				url = `../wp-content/plugins/contributions/api/GetMembersByRegion.php?year=${filter.year}`;
 				break;
 			}
 			default: {
@@ -107,7 +109,8 @@ export const useApp = () => {
 				dateOfBirth: new Date(x.dateOfBirth),
 				fpuDate: new Date(x.fpuDate),
 				lastAlterEventDate: new Date(x.lastAlterEventDate),
-				reFpuDate: new Date(x.reFpuDate)
+				reFpuDate: new Date(x.reFpuDate),
+				phone: phoneToMask(x.phone)
 			}));
 			setMembers(nextMembers); 
 		});
@@ -129,7 +132,8 @@ export const useApp = () => {
 			},
 			body: JSON.stringify({
 				memberId: member.memberId,
-				isContributed: !member.isContributed
+				isContributed: !member.isContributed,
+				year: filter.year
 			} as Models.ChangeContributionStatusModel)
 		});
 		await onLoadMembersAdm();
@@ -154,22 +158,18 @@ export const useApp = () => {
 		setMemberToRemove(null);
 	}
 
-	const showMembersList = React.useMemo<boolean>(() => {
-		return view === Models.View.MembersList && !!credentials && credentials.appType !== "common";
-	}, [view, credentials]);
+	const showMembersList = view === Models.View.MembersList && !!credentials && credentials.appType !== "common";
 
-	const showMemberDetails = React.useMemo<boolean>(() => {
-		return view === Models.View.MemberDetails && !!credentials && credentials.appType !== "common";
-	}, [view, credentials]);
+	const showMemberDetails = view === Models.View.MemberDetails && !!credentials && credentials.appType !== "common";
 
-	const showMembership = React.useMemo<boolean>(() => {
-		return !!credentials && credentials.appType === "common";
-	}, [credentials]);
+	const showMembership = !!credentials && credentials.appType === "common";
 
 	const showAreaFilter = !!credentials && credentials.appType !== "region";
 
+	const displaySmallMode = !!credentials && credentials.appType === 'region';
+
 	const onLoadMembership = async () => {
-		await fetch(`../wp-content/plugins/contributions/api/GetMembership.php`)
+		await fetch(`../wp-content/plugins/contributions/api/GetMembership.php?year=${filter.year}&areaId=${filter.areaId}`)
 			.then(response => response.json())
 			.then((data: Models.Membership[]) => {
 				const memberships: Models.Membership[] = data.map(x => ({
@@ -194,6 +194,7 @@ export const useApp = () => {
 		membershipData,
 		filter,
 		showAreaFilter,
+		displaySmallMode,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,

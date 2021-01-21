@@ -11,7 +11,7 @@ export interface Member {
 	id?: string,
 	passport: string,
 	address: string,
-	phone: number,
+	phone: string,
 	email: string,
 	job: string,
 	position: string,
@@ -55,7 +55,8 @@ export interface Region {
 
 export interface ChangeContributionStatusModel {
 	memberId: number,
-	isContributed: boolean
+	isContributed: boolean,
+	year: number
 }
 
 export interface DeleteMemberModel {

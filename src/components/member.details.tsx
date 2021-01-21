@@ -12,7 +12,6 @@ import * as classnames from 'classnames';
 import MaskedInput from 'react-text-mask';
 import * as Lookups from './Lookups.json';
 import * as moment from 'moment';
-import { nextTick } from 'process';
 
 const defaultMember: Models.Member = {
 	memberId: null,
@@ -35,11 +34,11 @@ const defaultMember: Models.Member = {
 }
 
 export const MemberDetails: React.FC = () => {
-	const { member: currentMember, regions, credentials, onBack, onCreateMember, onUpdateMember } = useAppContext();
+	const { member: currentMember, regions, credentials, filter, onBack, onCreateMember, onUpdateMember } = useAppContext();
 	const [member, setMemeber] = React.useState<Models.Member>(currentMember ||
 	{
 		...defaultMember,
-		areaId: credentials.appType === 'region' ? credentials.uid : null
+		areaId: credentials.appType === 'region' ? credentials.uid : filter.areaId
 	});
 
 	const onMemberUpdate = (key: keyof Models.Member, value: string | number | Date | [Date, Date] | boolean) => {
@@ -328,7 +327,7 @@ export const MemberDetails: React.FC = () => {
 							onChange={() => onMemberUpdate('isContributed', !member.isContributed)}
 						/>
 						<label className='form-check-label'>
-							Внесок сплачено
+							Внесок сплачено (за {filter.year} рік)
 						</label>
 					</div>
 				</div>

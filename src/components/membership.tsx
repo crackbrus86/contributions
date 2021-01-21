@@ -3,36 +3,35 @@ import * as moment from 'moment';
 import { useAppContext } from '../app.context';
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import './membership.scss';
+import * as classnames from 'classnames';
+import { Filter } from './filter';
 
 export const Membership: React.FC = () => {
-    const { regions, membershipData, onLoadMembership } = useAppContext();
-    const [currentRegionId, setCurrentRegionId] = React.useState<number>(0);
+    const { regions, membershipData, filter, onLoadMembership, onResetFilter } = useAppContext();
+    const [showFilter, setShowFilter] = React.useState<boolean>(filter.year != new Date().getFullYear() || filter.areaId !== 0);
 
     React.useEffect(() => {
         onLoadMembership();
-    }, []);
+    }, [filter]);
 
-    React.useEffect(() => {
-        if(!currentRegionId && !!regions[0])
-            setCurrentRegionId(regions[0].id)
-    }, [regions, currentRegionId]);
-
-    const membership = React.useMemo(() => {
-        return membershipData.filter(x => x.areaId == currentRegionId);
-    }, [currentRegionId, membershipData]);
+    const onToggleShowFilter = () => {
+        setShowFilter(!showFilter);
+        if(showFilter) onResetFilter();
+    }
 
     return <div className='membership'>
         <div className='mb-3 row'>
-            <label>Область</label>
-            <select value={currentRegionId} className='form-control form-select' onChange={e => setCurrentRegionId(parseInt(e.target.value))}>
-                {regions.map(region => <option key={region.id} value={region.id}>{region.name}</option>)}
-            </select>
+            <button type='button' className={classnames('btn ml-2', { 'btn-secondary': !showFilter, 'btn-success': showFilter })} onClick={onToggleShowFilter} >
+                <FontAwesomeIcon className='mr-2' icon={faFilter} />Фільтрувати
+            </button>
         </div>
+        {showFilter && <Filter />}
         <div className='row'>
             <div className='col-lg'>
-                {!membership.length && <div className='alert alert-dark' role='alert'>Немає даних по цій області.</div>}
-                {!!membership.length && 
+                {!membershipData.length && <div className='alert alert-dark' role='alert'>Немає даних по цій області.</div>}
+                {!!membershipData.length && 
                     <table  className='table table-hover table-striped'>
                         <thead>
                             <tr>
@@ -46,7 +45,7 @@ export const Membership: React.FC = () => {
                         </thead>
                         <tbody>
                             {
-                                membership.map((x, index) => <tr key={x.memberId}>
+                                membershipData.map((x, index) => <tr key={x.memberId}>
                                     <td key='1'>{++index}</td>
                                     <td key='2'>{x.fullName}</td>
                                     <td key='3' className='td-align-center'>{moment(x.dateOfBirth).format('DD/MM/YYYY')}</td>

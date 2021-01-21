@@ -8,7 +8,7 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
     $member = json_decode($json);
     if(!$member->fullName || !$member->dateOfBirth || !$member->fpuDate
     || !$member->areaId || !$member->citizenship || !$member->phone || !$member->passport
-    || !$member->id
+    || !$member->id || !$member->year
     || ($member->otherFederationMembership && (!$member->lastAlterEventDate || !$member->reFpuDate))) 
     {
         http_response_code(400);
@@ -66,14 +66,14 @@ if(current_user_can('manage_options') || isset($_SESSION['regionObj']))
 
     $sqlLogDel = $wpdb->prepare("DELETE FROM $table_pc_log 
         WHERE memberId = %d AND YEAR(createDate) = %s", 
-        $member->memberId, date("Y"));
+        $member->memberId, $member->year);
     $wpdb->query($sqlLogDel);
 
     if($member->isContributed)
     {
         $sqlLogInsrt = $wpdb->prepare("INSERT INTO $table_pc_log (memberId, createDate) 
         VALUES (%d, %s)",
-        $member->memberId, date("Y-m-d h:i:s"));
+        $member->memberId, date("Y-m-d h:i:s", mktime(date("h"), date("i"), date("s"), date("m"), date("d"), $member->year)));
         $wpdb->query($sqlLogInsrt);
     }
 

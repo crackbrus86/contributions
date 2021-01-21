@@ -108,8 +108,8 @@ export const useApp = () => {
 				...x,
 				dateOfBirth: new Date(x.dateOfBirth),
 				fpuDate: new Date(x.fpuDate),
-				lastAlterEventDate: new Date(x.lastAlterEventDate),
-				reFpuDate: new Date(x.reFpuDate),
+				lastAlterEventDate: x.lastAlterEventDate.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.lastAlterEventDate),
+				reFpuDate: x.reFpuDate.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.reFpuDate),
 				phone: phoneToMask(x.phone)
 			}));
 			setMembers(nextMembers); 
@@ -140,7 +140,7 @@ export const useApp = () => {
 	}
 
 	const onDeleteMember = async (model: Models.DeleteMemberModel) => {
-		await fetch(`../wp-content/plugins/contributions/api/DeleteMember`, {
+		await fetch(`../wp-content/plugins/contributions/api/DeleteMember.php`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

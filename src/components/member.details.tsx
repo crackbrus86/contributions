@@ -27,6 +27,8 @@ const defaultMember: Models.Member = {
 	position: '',
 	jobAddress: '',
 	otherFederationMembership: false,
+	lastAlterEventDate: new Date(),
+	reFpuDate: moment(new Date()).add(1, 'y').toDate(),
 	fpuDate: new Date(),
 	area: '',
 	areaId: null,

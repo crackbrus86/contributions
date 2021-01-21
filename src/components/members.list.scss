@@ -3,12 +3,16 @@
         table-layout: fixed;
 
         &.table-reduced {
-            font-size: 0.8em;
-            thead th:nth-child(8), thead th:nth-child(9) {
+            font-size: 0.7em;
+            thead th:nth-child(6), thead th:nth-child(7),
+            thead th:nth-child(8) {
                 width: 80px!important;
             }
+            thead th:nth-child(9) {
+                width: 100px!important;
+            }
             .table__action-btn {
-                font-size: 1.2em;
+                font-size: 1.5em;
             }
         }
         

@@ -11,6 +11,7 @@ export const useApp = () => {
 	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
 	const [membershipData, setMembershipData] = React.useState<Models.Membership[]>([]);
 	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0 });
+	const [showExport, setShowExport] = React.useState<boolean>(false);
 
 	const onChangeYearFilter = (value: string) => {
 		const nextYear = Number(value);
@@ -108,8 +109,8 @@ export const useApp = () => {
 				...x,
 				dateOfBirth: new Date(x.dateOfBirth),
 				fpuDate: new Date(x.fpuDate),
-				lastAlterEventDate: x.lastAlterEventDate.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.lastAlterEventDate),
-				reFpuDate: x.reFpuDate.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.reFpuDate),
+				lastAlterEventDate: x.lastAlterEventDate?.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.lastAlterEventDate),
+				reFpuDate: x.reFpuDate?.toString() === '0000-00-00 00:00:00' ? new Date('01-01-1970') : new Date(x.reFpuDate),
 				phone: phoneToMask(x.phone)
 			}));
 			setMembers(nextMembers); 
@@ -181,6 +182,16 @@ export const useApp = () => {
 			});
 	}
 
+	const onShowExport = () => {
+		setShowExport(true);
+	}
+
+	const onHideExport = () => {
+		setShowExport(false);
+	}
+
+	const canExport = !!credentials && credentials.appType === 'admin';
+
 	return {
 		view,
 		member,
@@ -195,6 +206,8 @@ export const useApp = () => {
 		filter,
 		showAreaFilter,
 		displaySmallMode,
+		showExport,
+		canExport,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -210,7 +223,9 @@ export const useApp = () => {
 		onLoadMembership,
 		onChangeYearFilter,
 		onChangeAreaFilter,
-		onResetFilter
+		onResetFilter,
+		onShowExport,
+		onHideExport
 	};
 }
 

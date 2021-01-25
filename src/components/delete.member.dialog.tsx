@@ -4,7 +4,6 @@ import { useAppContext } from '../app.context';
 import './delete.member.dialog.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import * as Models from '../models';
 
 export const DeleteMemberDialog: React.FC = () => {
     const { memberToRemove, onDeleteMember, onHideConfirm } = useAppContext();

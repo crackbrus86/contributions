@@ -3,7 +3,7 @@ import TableHeaders from "./TableHeaders.json";
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUserEdit, faSpinner, faUserSlash, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
+import { faSquare, faCheckSquare, faFileWord } from '@fortawesome/free-regular-svg-icons';
 import './members.list.scss';
 import { useAppContext } from '../app.context';
 import * as classnames from 'classnames';
@@ -13,14 +13,15 @@ export const MembersList: React.FC = () => {
     const {
         members,
         filter,
-        credentials,
         displaySmallMode,
+        canExport,
         onAddMember,
         onEdit,
         onLoadMembersAdm,
         onChangeContributionStatus,
         onShowConfirm,
-        onResetFilter
+        onResetFilter,
+        onShowExport,
     } = useAppContext();
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -38,7 +39,11 @@ export const MembersList: React.FC = () => {
 
     const onToggleShowFilter = () => {
         setShowFilter(!showFilter);
-        if(showFilter) onResetFilter();
+        if (showFilter) onResetFilter();
+    }
+
+    const onExport = () => {
+
     }
 
     return <div className='members-list'>
@@ -49,6 +54,15 @@ export const MembersList: React.FC = () => {
                 <button type='button' className={classnames('btn ml-2', { 'btn-secondary': !showFilter, 'btn-success': showFilter })} onClick={onToggleShowFilter} >
                     <FontAwesomeIcon icon={faFilter} />
                 </button>
+                {canExport &&
+                    <button
+                        type='button'
+                        className='btn btn-secondary ml-2'
+                        onClick={onShowExport}
+                    >
+                        <FontAwesomeIcon icon={faFileWord} size='1x' /> Експорт у Word
+                    </button>
+                }
             </div>
         </div>
         {showFilter && <Filter />}
@@ -61,7 +75,7 @@ export const MembersList: React.FC = () => {
                     </div>
                 }
                 {members.length > 0 &&
-                    <table className={classnames('table table-hover table-striped', {'table-reduced': displaySmallMode})}>
+                    <table className={classnames('table table-hover table-striped', { 'table-reduced': displaySmallMode })}>
                         <thead>
                             <tr>
                                 <th key='btn1' style={{ width: '30px' }}></th>
@@ -91,10 +105,9 @@ export const MembersList: React.FC = () => {
                                 </td>
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>
-                                <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>                                
-                                <td key='fpuDate' className='td-align-center'>{moment(member.fpuDate).format('DD/MM/YYYY')}</td>
+                                <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>
                                 <td key='otherFederationMembership' className='td-align-center'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
-                                <td key='reFpuDate' className={classnames('td-align-center', {'highlight': member.otherFederationMembership })}>{
+                                <td key='reFpuDate' className={classnames('td-align-center', { 'highlight': member.otherFederationMembership })}>{
                                     member.otherFederationMembership ? moment(member.reFpuDate).format('DD/MM/YYYY') : null
                                 }</td>
                                 <td key='area' className='td-align-center'>{member.area}</td>

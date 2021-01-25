@@ -17,7 +17,7 @@ const defaultMember: Models.Member = {
 	memberId: null,
 	fullName: '',
 	dateOfBirth: new Date(),
-	citizenship: '',
+	citizenship: 'українське',
 	id: null,
 	passport: '',
 	address: '',
@@ -150,18 +150,14 @@ export const MemberDetails: React.FC = () => {
 			<div className='row mb-3'>
 				<div className='col'>
 					<label className='form-label'>Громадянство</label>
-					<input
-						type='text'
-						className={classnames('form-control', { 'is-invalid': !member.citizenship })}
+					<select
+						className='form-select form-control'
 						value={member.citizenship}
 						onChange={e => onMemberUpdate('citizenship', e.target.value)}
-					/>
-					{
-						!member.citizenship &&
-						<div className='invalid-feedback'>
-							Громадянство є обов'язковим полем!
-						</div>
-					}
+					>
+						<option key={0} value='українське'>Українське</option>
+						<option key={1} value='інше'>Інше</option>
+					</select>
 				</div>
 				<div className='col'>
 					<label className='form-label'>Ідентифікаційний номер</label>
@@ -307,7 +303,7 @@ export const MemberDetails: React.FC = () => {
 							/>
 						</div>
 						<div className='col-md-4'>
-							<label className='form-label'>Дата повторного набуття членства</label><br />
+							<label className='form-label'>Дата закінчення накладеної санкції</label><br />
 							<DatePicker
 								className={classnames('form-control')}
 								selected={member.reFpuDate}

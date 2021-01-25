@@ -3,6 +3,7 @@ import { MembersList } from './components/members.list';
 import { MemberDetails } from './components/member.details';
 import { Membership } from './components/membership';
 import { DeleteMemberDialog } from './components/delete.member.dialog';
+import { ExportPreviewDialog } from './components/export.preview.dialog';
 import { useAppContext } from './app.context';
 
 export const AppRouter: React.FC = () => {
@@ -22,6 +23,7 @@ export const AppRouter: React.FC = () => {
 			{showMembersList && <MembersList />}
 			{showMemberDetails && <MemberDetails />}
 			<DeleteMemberDialog />
+			<ExportPreviewDialog />
 		</>
 	);
 }

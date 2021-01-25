@@ -38,7 +38,6 @@ export const Membership: React.FC = () => {
                                 <th style={{width: '45px'}}>№</th>
                                 <th>П.І.П</th>
                                 <th style={{width: '140px'}}>Дата народження</th>
-                                <th style={{width: '140px'}}>Дата вступу до ФПУ</th>
                                 <th style={{width: '180px'}}>Область</th>
                                 <th style={{width: '85px'}}>Внесок сплачено</th>
                             </tr>
@@ -49,7 +48,6 @@ export const Membership: React.FC = () => {
                                     <td key='1'>{++index}</td>
                                     <td key='2'>{x.fullName}</td>
                                     <td key='3' className='td-align-center'>{moment(x.dateOfBirth).format('DD/MM/YYYY')}</td>
-                                    <td key='4' className='td-align-center'>{moment(x.fpuDate).format('DD/MM/YYYY')}</td>
                                     <td key='5' className='td-align-center'>{x.area}</td>
                                     <td key='6' className='td-align-center'>
                                         <FontAwesomeIcon

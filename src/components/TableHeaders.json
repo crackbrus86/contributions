@@ -2,36 +2,49 @@
     {
         "id": 1,
         "title": "#",
-        "width": "45px"
+        "width": "45px",
+        "isReferee": false
     },
     {
         "id": 2,
         "title": "Прізвище, ім'я, по батькові",
-        "width": "*"
+        "width": "*",
+        "isReferee": false
     },
     {
         "id": 3,
         "title": "Дата народження",
-        "width": "140px"
+        "width": "140px",
+        "isReferee": false
     },
     {
         "id": 4,
-        "title": "Членство в інших федераціях",
-        "width": "100px"
+        "title": "Суддівська категорія",
+        "width": "100px",
+        "isReferee": true
     },
     {
         "id": 5,
-        "title": "Дата закінчення накладеної санкції",
-        "width": "140px"
+        "title": "Членство в інших федераціях",
+        "width": "100px",
+        "isReferee": false
     },
     {
         "id": 6,
-        "title": "Область",
-        "width": "180px"
+        "title": "Дата закінчення накладеної санкції",
+        "width": "140px",
+        "isReferee": false
     },
     {
         "id": 7,
+        "title": "Область",
+        "width": "180px",
+        "isReferee": false
+    },
+    {
+        "id": 8,
         "title": "Внесок сплачено",
-        "width": "85px"
+        "width": "85px",
+        "isReferee": false
     }
 ]

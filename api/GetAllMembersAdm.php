@@ -8,6 +8,7 @@ if(current_user_can("manage_options"))
 {
     $year = $_GET["year"];
     $areaId = $_GET["areaId"];
+    $onlyReferee = $_GET["onlyReferee"];
 
     if($year == NULL || $areaId == NULL)
     {
@@ -44,8 +45,10 @@ if(current_user_can("manage_options"))
     FROM $table_pc_members AS members
     JOIN $table_regions AS regions ON regions.id = members.areaId
     LEFT JOIN $table_pc_log AS log ON log.memberId = members.memberId AND YEAR(log.createDate) = %s
-    WHERE regions.id = %d OR %d = 0
-    ORDER BY fullName", $year, $areaId, $areaId);
+    WHERE (regions.id = %d OR %d = 0) AND (
+        (IFNULL(refereeCategory, '') <> '') OR %d = 0
+    )
+    ORDER BY fullName", $year, $areaId, $areaId, $onlyReferee);
 
     $result = $wpdb->get_results($sql);
     $result = array_map("membersMap", $result);

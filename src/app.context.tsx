@@ -10,7 +10,7 @@ export const useApp = () => {
 	const [regions, setRegions] = React.useState<Models.Region[]>([]);
 	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
 	const [membershipData, setMembershipData] = React.useState<Models.Membership[]>([]);
-	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0 });
+	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false });
 	const [showExport, setShowExport] = React.useState<boolean>(false);
 
 	const onChangeYearFilter = (value: string) => {
@@ -27,8 +27,12 @@ export const useApp = () => {
 		setFilter(nextFilter);
 	}
 
+	const onChangeOnlyRefereeFilter = () => {
+		setFilter({ ...filter, onlyReferees: !filter.onlyReferees });
+	}
+
 	const onResetFilter = () => {
-		setFilter({ year: new Date().getFullYear(), areaId: 0 });
+		setFilter({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false });
 	}
 
 	const onLoadCredentials = React.useCallback(() => {
@@ -91,7 +95,7 @@ export const useApp = () => {
 		let url: string;
 		switch(credentials.appType) {
 			case 'admin': {
-				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php?year=${filter.year}&areaId=${filter.areaId}`;
+				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php?year=${filter.year}&areaId=${filter.areaId}&onlyReferee=${filter.onlyReferees ? 1 : 0}`;
 				break;
 			}
 			case 'region': {
@@ -192,6 +196,10 @@ export const useApp = () => {
 
 	const canExport = !!credentials && credentials.appType === 'admin';
 
+	const showRefereeFilter = !!credentials && credentials.appType === 'admin';
+
+	const canEditContribution = !!credentials && credentials.appType === 'admin';
+
 	return {
 		view,
 		member,
@@ -208,6 +216,8 @@ export const useApp = () => {
 		displaySmallMode,
 		showExport,
 		canExport,
+		showRefereeFilter,
+		canEditContribution,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -223,6 +233,7 @@ export const useApp = () => {
 		onLoadMembership,
 		onChangeYearFilter,
 		onChangeAreaFilter,
+		onChangeOnlyRefereeFilter,
 		onResetFilter,
 		onShowExport,
 		onHideExport

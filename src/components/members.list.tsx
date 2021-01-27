@@ -1,5 +1,6 @@
 import React from 'react';
 import TableHeaders from "./TableHeaders.json";
+import Lookups from './Lookups.json';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUserEdit, faSpinner, faUserSlash, faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +16,7 @@ export const MembersList: React.FC = () => {
         filter,
         displaySmallMode,
         canExport,
+        canEditContribution,
         onAddMember,
         onEdit,
         onLoadMembersAdm,
@@ -42,8 +44,8 @@ export const MembersList: React.FC = () => {
         if (showFilter) onResetFilter();
     }
 
-    const onExport = () => {
-
+    const displayRefereeCategory = (category: string) => {
+        return Lookups.refereeCategories.find(x => x.id === category)?.title || '';
     }
 
     return <div className='members-list'>
@@ -80,7 +82,8 @@ export const MembersList: React.FC = () => {
                             <tr>
                                 <th key='btn1' style={{ width: '30px' }}></th>
                                 <th key='btn2' style={{ width: '30px' }}></th>
-                                {TableHeaders.map(header => <th key={header.id} scope='col' style={{ width: header.width }}>{header.title}</th>)}
+                                {TableHeaders.map(header => (!header.isReferee || filter.onlyReferees) &&
+                                    <th key={header.id} scope='col' style={{ width: header.width }}>{header.title}</th>)}
                             </tr>
                         </thead>
                         <tbody>
@@ -106,6 +109,9 @@ export const MembersList: React.FC = () => {
                                 <td key='no'>{index + 1}</td>
                                 <td key='fullName'>{member.fullName}</td>
                                 <td key='dateOfBirth' className='td-align-center'>{moment(member.dateOfBirth).format('DD/MM/YYYY')}</td>
+                                { filter.onlyReferees && 
+                                    <td key='refereeCat' className='td-align-center'>{displayRefereeCategory(member.refereeCategory)}</td>
+                                }
                                 <td key='otherFederationMembership' className='td-align-center'>{member.otherFederationMembership ? 'Так' : 'Ні'}</td>
                                 <td key='reFpuDate' className={classnames('td-align-center', { 'highlight': member.otherFederationMembership })}>{
                                     member.otherFederationMembership ? moment(member.reFpuDate).format('DD/MM/YYYY') : null
@@ -113,10 +119,10 @@ export const MembersList: React.FC = () => {
                                 <td key='area' className='td-align-center'>{member.area}</td>
                                 <td key='isContributed' className='td-align-center'>
                                     <FontAwesomeIcon
-                                        className='table__action-icon'
+                                        className={classnames({ 'table__action-icon': canEditContribution })}
                                         icon={member.isContributed ? faCheckSquare : faSquare}
                                         size='2x'
-                                        onClick={() => onChangeContributionStatus(member)}
+                                        onClick={() => canEditContribution && onChangeContributionStatus(member)}
                                     />
                                 </td>
                             </tr>)}

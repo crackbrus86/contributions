@@ -19,7 +19,7 @@ export const ExportPreviewDialog: React.FC = () => {
         let fileDownload = document.createElement('a');
         document.body.appendChild(fileDownload);
         fileDownload.href = source;
-        fileDownload.download = `fpu-membership-${moment(new Date()).format('DD-MM-YYYY hh:mm:ss')}.docx`;
+        fileDownload.download = `fpu-membership-${moment(new Date()).format('DD-MM-YYYY hh:mm:ss')}.doc`;
         fileDownload.click();
         document.body.removeChild(fileDownload);
         onHideExport();

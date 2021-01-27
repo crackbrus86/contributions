@@ -65,5 +65,6 @@ export interface DeleteMemberModel {
 
 export interface Filter {
 	year: number,
-	areaId: number
+	areaId: number,
+	onlyReferees: boolean
 }

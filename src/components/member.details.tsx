@@ -36,7 +36,7 @@ const defaultMember: Models.Member = {
 }
 
 export const MemberDetails: React.FC = () => {
-	const { member: currentMember, regions, credentials, filter, onBack, onCreateMember, onUpdateMember } = useAppContext();
+	const { member: currentMember, regions, credentials, filter, canEditContribution, onBack, onCreateMember, onUpdateMember } = useAppContext();
 	const [member, setMemeber] = React.useState<Models.Member>(currentMember ||
 	{
 		...defaultMember,
@@ -322,6 +322,7 @@ export const MemberDetails: React.FC = () => {
 							className='form-check-input'
 							type='checkbox'
 							checked={member.isContributed}
+							disabled={!canEditContribution}
 							onChange={() => onMemberUpdate('isContributed', !member.isContributed)}
 						/>
 						<label className='form-check-label'>

@@ -2,16 +2,17 @@
 /*
 Plugin Name: Contributions
 Description: UPF Contributions
-Version: 1.0
+Version: 1.0.1
 Author: Salivon Eugene
 */
+define('APP_VERSION', '1.0.1');
 define('CNTR_DIR', plugin_dir_path(__FILE__));
 add_action("admin_menu", array("Contributions", "initSettings"));
 add_action("admin_init", array("Contributions", "initDb"));
 
 function getRegionClient()
 {
-    wp_register_script('clientAppRegion', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
+    wp_register_script('clientAppRegion', plugins_url('/dist/bundle.js?v=' . APP_VERSION, __FILE__));
     wp_enqueue_script('clientAppRegion');
     if(isset($_SESSION['regionObj']))
     { 
@@ -30,7 +31,7 @@ add_shortcode('pcRegion', 'getRegionClient');
 
 function getCommonClient()
 {
-    wp_register_script('clientAppCommon', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
+    wp_register_script('clientAppCommon', plugins_url('/dist/bundle.js?v=' . APP_VERSION, __FILE__));
     wp_enqueue_script('clientAppCommon');
     ?>
         <div id="usrInfo" data-info="0"></div>
@@ -48,7 +49,7 @@ class Contributions {
     }
 
     public function contributionsAdmin() {
-        wp_register_script('clientApp', plugins_url('/dist/bundle.js?v='.time(), __FILE__));
+        wp_register_script('clientApp', plugins_url('/dist/bundle.js?v=' . APP_VERSION, __FILE__));
         wp_enqueue_script('clientApp');
         ?>
         <div id="usrInfo" data-info="<?php print(get_current_user_id()); ?>"></div>

@@ -307,9 +307,9 @@ export const MemberDetails: React.FC = () => {
 							<DatePicker
 								className={classnames('form-control')}
 								selected={member.reFpuDate}
-								disabled
+								disabled={!canEditContribution}
 								dateFormat='dd/MM/yyyy'
-								onChange={date => onMemberUpdate('lastAlterEventDate', date)}
+								onChange={date => onMemberUpdate('reFpuDate', date)}
 							/>
 						</div>
 					</>

@@ -7,20 +7,19 @@ export const Filter: React.FC = () => {
         filter,
         showAreaFilter,
         regions,
-        showMembership,
         showRefereeFilter,
         onChangeYearFilter,
         onChangeAreaFilter,
         onChangeOnlyRefereeFilter 
     } = useAppContext();
     return <div className='row mb-2'>
-        <div className={classnames({ 'col-2': !showMembership, 'col-3': showMembership })}>
+        <div className='col-4'>
             <label className='form-label'>Фільтр за роком</label><br />
             <input value={filter.year} type='number' onChange={e => onChangeYearFilter(e.target.value)} />
         </div>
         {
             showAreaFilter &&
-            <div className='col-3'>
+            <div className='col-4'>
                 <label className='form-label'>Фільтр за областю</label><br />
                 <select value={filter.areaId} className='form-control form-select' onChange={e => onChangeAreaFilter(e.target.value)}>
                     <option value={0}>Всі</option>
@@ -30,7 +29,7 @@ export const Filter: React.FC = () => {
         }
         {
             showRefereeFilter && 
-            <div className='col-3'>
+            <div className='col-4'>
                 <label className='form-check-label'>Показувати лише суддів</label>
                 <div className='mt-2'>
                     <input

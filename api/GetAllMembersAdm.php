@@ -9,12 +9,16 @@ if(current_user_can("manage_options"))
     $year = $_GET["year"];
     $areaId = $_GET["areaId"];
     $onlyReferee = $_GET["onlyReferee"];
+    $yearOfBirth = $_GET["yearOfBirth"];
 
     if($year == NULL || $areaId == NULL)
     {
         http_response_code(400);
         return;
     }
+
+    if($yearOfBirth == 'null' || $yearOfBirth == NULL)
+        $yearOfBirth = '';
 
     $table_pc_members = $wpdb->get_blog_prefix() . "pc_members";
     $table_regions = $wpdb->get_blog_prefix() . "regions";
@@ -38,17 +42,19 @@ if(current_user_can("manage_options"))
         regions.name as area,
         CASE WHEN log.contributionId IS NOT NULL THEN 1 ELSE 0 END as isContributed,
         class,
-        rank,
+        members.rank,
         refereeCategory,
         lastAlterEventDate,
         reFpuDate
     FROM $table_pc_members AS members
     JOIN $table_regions AS regions ON regions.id = members.areaId
     LEFT JOIN $table_pc_log AS log ON log.memberId = members.memberId AND YEAR(log.createDate) = %s
-    WHERE (regions.id = %d OR %d = 0) AND (
-        (IFNULL(refereeCategory, '') <> '') OR %d = 0
-    )
-    ORDER BY fullName", $year, $areaId, $areaId, $onlyReferee);
+    WHERE (YEAR(members.dateOfBirth) = %s OR %s = '')
+        AND (regions.id = %d OR %d = 0) 
+        AND (
+                (IFNULL(refereeCategory, '') <> '') OR %d = 0
+            )
+    ORDER BY fullName", $year, $yearOfBirth, $yearOfBirth, $areaId, $areaId, $onlyReferee);
 
     $result = $wpdb->get_results($sql);
     $result = array_map("membersMap", $result);

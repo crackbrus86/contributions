@@ -10,7 +10,7 @@ export const useApp = () => {
 	const [regions, setRegions] = React.useState<Models.Region[]>([]);
 	const [memberToRemove, setMemberToRemove] = React.useState<Models.Member>(null);
 	const [membershipData, setMembershipData] = React.useState<Models.Membership[]>([]);
-	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false });
+	const [filter, setFilter] = React.useState<Models.Filter>({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false, yearOfBirth: null });
 	const [showExport, setShowExport] = React.useState<boolean>(false);
 
 	const onChangeYearFilter = (value: string) => {
@@ -18,6 +18,15 @@ export const useApp = () => {
 		const nextFilter: Models.Filter = {
 			...filter,
 			year: isNaN(nextYear) || nextYear === 0 || nextYear > new Date().getFullYear() ? new Date().getFullYear() : nextYear,
+		};
+		setFilter(nextFilter);
+	}
+
+	const onChangeYearOfBirthFilter = (value: string) => {
+		const nextYearOfBirth = Number(value);
+		const nextFilter: Models.Filter = {
+			...filter,
+			yearOfBirth: isNaN(nextYearOfBirth) || nextYearOfBirth === 0 || nextYearOfBirth > new Date().getFullYear() ? null : nextYearOfBirth
 		};
 		setFilter(nextFilter);
 	}
@@ -32,7 +41,7 @@ export const useApp = () => {
 	}
 
 	const onResetFilter = () => {
-		setFilter({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false });
+		setFilter({ year: new Date().getFullYear(), areaId: 0, onlyReferees: false, yearOfBirth: null });
 	}
 
 	const onLoadCredentials = React.useCallback(() => {
@@ -95,7 +104,7 @@ export const useApp = () => {
 		let url: string;
 		switch(credentials.appType) {
 			case 'admin': {
-				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php?year=${filter.year}&areaId=${filter.areaId}&onlyReferee=${filter.onlyReferees ? 1 : 0}`;
+				url = `../wp-content/plugins/contributions/api/GetAllMembersAdm.php?year=${filter.year}&areaId=${filter.areaId}&onlyReferee=${filter.onlyReferees ? 1 : 0}&yearOfBirth=${filter.yearOfBirth}`;
 				break;
 			}
 			case 'region': {
@@ -199,6 +208,7 @@ export const useApp = () => {
 	const showRefereeFilter = !!credentials && credentials.appType === 'admin';
 
 	const canEditContribution = !!credentials && credentials.appType === 'admin';
+	const showYearOfBirthFilter = !!credentials && credentials.appType === 'admin';
 
 	return {
 		view,
@@ -218,6 +228,7 @@ export const useApp = () => {
 		canExport,
 		showRefereeFilter,
 		canEditContribution,
+		showYearOfBirthFilter,
 		onLoadCredentials,
 		onAddMember,
 		onEdit,
@@ -232,6 +243,7 @@ export const useApp = () => {
 		onDeleteMember,
 		onLoadMembership,
 		onChangeYearFilter,
+		onChangeYearOfBirthFilter,
 		onChangeAreaFilter,
 		onChangeOnlyRefereeFilter,
 		onResetFilter,

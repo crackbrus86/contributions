@@ -5,7 +5,7 @@ Description: UPF Contributions
 Version: 1.0.1
 Author: Salivon Eugene
 */
-define('APP_VERSION', '1.1.2');
+define('APP_VERSION', '1.2.2');
 define('CNTR_DIR', plugin_dir_path(__FILE__));
 add_action("admin_menu", array("Contributions", "initSettings"));
 add_action("admin_init", array("Contributions", "initDb"));

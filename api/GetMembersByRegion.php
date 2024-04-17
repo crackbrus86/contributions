@@ -37,7 +37,7 @@ if(isset($_SESSION['regionObj']))
         regions.name as area,
         CASE WHEN log.contributionId IS NOT NULL THEN 1 ELSE 0 END as isContributed,
         class,
-        rank,
+        members.rank,
         refereeCategory,
         lastAlterEventDate,
         reFpuDate
